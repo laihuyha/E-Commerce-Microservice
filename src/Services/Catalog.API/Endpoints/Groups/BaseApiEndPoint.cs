@@ -7,13 +7,11 @@ namespace Catalog.API.Endpoints.Groups
     {
         public BaseApiEndPoint()
         {
-            Configure("products", ep =>
+            Configure("/api", ep =>
             {
                 ep.AllowAnonymous();
                 ep.Description(x => x
-                .WithSummary("Product APIs")
-                .WithDescription("Product APIs includes GET: (All/Single Product(s) - POST: Create Product - PUT: Update Product - DELETE: Remove Product")
-                .WithTags("Products"));
+                .WithSummary("General APIs"));
             });
         }
     }

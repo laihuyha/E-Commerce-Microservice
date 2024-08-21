@@ -22,7 +22,7 @@ namespace Catalog.API.Endpoints.Product
             AllowAnonymous();
             Post("/");
             // Require authorization if needed
-            Group<BaseApiEndPoint>();
+            Group<ProductGroupEndPoints>();
 
             Options(opt =>
             {

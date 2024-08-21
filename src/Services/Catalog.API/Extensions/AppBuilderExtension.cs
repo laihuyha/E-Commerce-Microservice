@@ -13,7 +13,7 @@ namespace Catalog.API.Extensions
             appBuilder.UseFastEndpoints(cfg =>
             {
                 cfg.Serializer.Options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-                cfg.Endpoints.RoutePrefix = "api";
+                // cfg.Endpoints.RoutePrefix = "api";
             }).UseSwaggerGen();
             return appBuilder;
         }
