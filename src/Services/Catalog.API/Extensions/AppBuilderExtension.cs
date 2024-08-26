@@ -9,7 +9,7 @@ namespace Catalog.API.Extensions
     {
         public static IApplicationBuilder AddAppBuilderExtension(this IApplicationBuilder appBuilder)
         {
-            appBuilder.UseHttpsRedirection();
+            // appBuilder.UseHttpsRedirection();
             appBuilder.UseFastEndpoints(cfg =>
             {
                 cfg.Serializer.Options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;

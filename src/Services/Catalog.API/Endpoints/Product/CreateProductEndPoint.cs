@@ -1,7 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Catalog.API.Endpoints.Groups;
-using Catalog.API.Products.CQRS.Commands;
 using Catalog.API.Request.Product;
 using Catalog.API.Response.Product;
 using FastEndpoints;
@@ -36,20 +35,20 @@ namespace Catalog.API.Endpoints.Product
 
         public override async Task HandleAsync(CreateProductRequest request, CancellationToken ct)
         {
-            if (ValidationFailed)
-            {
-                foreach (ValidationFailure failure in ValidationFailures)
-                {
-                    var propertyName = failure.PropertyName;
-                    var errorMessage = failure.ErrorMessage;
-                }
-                ThrowIfAnyErrors();
-            }
+            // if (ValidationFailed)
+            // {
+            //     foreach (ValidationFailure failure in ValidationFailures)
+            //     {
+            //         var propertyName = failure.PropertyName;
+            //         var errorMessage = failure.ErrorMessage;
+            //     }
+            //     ThrowIfAnyErrors();
+            // }
 
             try
             {
                 // Map the request to the command
-                var command = request.Adapt<CreateProductCommand>();
+                var command = request.Adapt<CreateProductRequest>();
 
                 // Send the command using MediatR
                 var result = await _sender.Send(command, ct);

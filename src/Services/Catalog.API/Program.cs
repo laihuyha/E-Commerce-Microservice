@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddServiceExtension(); //Extension Method
+builder.Services.AddServiceExtension(builder.Configuration, builder.Environment); //Extension Method
 
 var app = builder.Build();
 
@@ -34,4 +34,4 @@ app.AddAppBuilderExtension(); //Extension Method
 // });
 #endregion
 
-app.Run();
+await app.RunAsync();
