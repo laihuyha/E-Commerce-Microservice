@@ -33,7 +33,7 @@ namespace Catalog.API.Extensions
             services.AddMarten(options =>
             {
                 // Establish the connection string to your Marten database
-                options.Connection(configuration.GetConnectionString("Database")!);
+                options.Connection(configuration.GetConnectionString("CatalogDatabase")!);
 
                 // Specify that we want to use STJ as our serializer
                 options.UseSystemTextJsonForSerialization();

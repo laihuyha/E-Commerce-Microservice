@@ -35,15 +35,15 @@ namespace Catalog.API.Endpoints.Product
 
         public override async Task HandleAsync(CreateProductRequest request, CancellationToken ct)
         {
-            // if (ValidationFailed)
-            // {
-            //     foreach (ValidationFailure failure in ValidationFailures)
-            //     {
-            //         var propertyName = failure.PropertyName;
-            //         var errorMessage = failure.ErrorMessage;
-            //     }
-            //     ThrowIfAnyErrors();
-            // }
+            if (ValidationFailed)
+            {
+                foreach (ValidationFailure failure in ValidationFailures)
+                {
+                    var propertyName = failure.PropertyName;
+                    var errorMessage = failure.ErrorMessage;
+                }
+                ThrowIfAnyErrors();
+            }
 
             try
             {
