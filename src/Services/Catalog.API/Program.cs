@@ -1,7 +1,10 @@
 using Catalog.API.Extensions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MongoDB.Driver;
+using MongoDB.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +22,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.AddAppBuilderExtension(); //Extension Method
+// Config the lifetime of the application
+_ = app.AddAppBuilderExtension(); //Extension Method
+await DB.InitAsync("CatalogDb", MongoClientSettings.FromConnectionString(builder.Configuration.GetConnectionString("MongoDb")));
 
 #region need to generate API
 // await app.GenerateApiClientsAndExitAsync(
@@ -34,4 +39,4 @@ app.AddAppBuilderExtension(); //Extension Method
 // });
 #endregion
 
-await app.RunAsync();
+app.Run();

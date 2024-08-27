@@ -4,14 +4,12 @@ using System.Threading.Tasks;
 using BuildingBlocks.CQRS;
 using Catalog.API.Request.Product;
 using Catalog.API.Response.Product;
-using Marten;
+using MongoDB.Entities;
 
 namespace Catalog.API.Products.Create
 {
-    internal class CreateProductCommandHandler(IDocumentSession documentSession) : ICommandHandler<CreateProductRequest, CreateProductResponse>
+    internal class CreateProductCommandHandler : ICommandHandler<CreateProductRequest, CreateProductResponse>
     {
-        private readonly IDocumentSession _documentSession = documentSession;
-
         public async Task<CreateProductResponse> Handle(CreateProductRequest request, CancellationToken cancellationToken)
         {
             try
@@ -26,9 +24,8 @@ namespace Catalog.API.Products.Create
                     Price = request.Price,
                 };
                 // Save to DB
-                _documentSession.Store(product);
-                await _documentSession.SaveChangesAsync(cancellationToken);
-                return new CreateProductResponse(product.Id);
+                await DB.SaveAsync(product, cancellation: cancellationToken);
+                return new CreateProductResponse(product.ID);
             }
             catch (Exception ex)
             {
