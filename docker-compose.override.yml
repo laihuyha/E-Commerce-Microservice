@@ -1,0 +1,24 @@
+services:
+  catalog.db:
+    container_name: catalog.db
+    restart: always
+    volumes:
+      - postgres_catalog:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=CatalogDb
+    ports:
+      - 5432:5432
+  
+  catalog.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__CatalogDatabase=Server=catalog.db;Port=5432;Database=CatalogDb;User Id=postgres;Password=postgres;Include Error Detail=true
+      ## src\Services\Catalog.API\Extensions\BuilderServiceExtension.cs has Marten config for create connect to DB
+      ## `options.Connection(configuration.GetConnectionString("CatalogDatabase")!)` == `ConnectionStrings__CatalogDatabase`
+      ## when we dockerize API we cannot use localhost as server anymore cuz docker can't understand or recognize the IP or Host of server
+      ## so we use available service for Host `catalog.db` make docker can recognize the host and connect to it.
+    ports:
+      - "8080:8080"

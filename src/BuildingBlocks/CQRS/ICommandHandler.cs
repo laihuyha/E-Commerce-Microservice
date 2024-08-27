@@ -16,10 +16,10 @@ namespace BuildingBlocks.CQRS
     /// Interface for Command
     /// </summary>
     /// <typeparam name="TCommand">Should be a class inherited from ICommand.</typeparam>
-    /// <typeparam name="TCommandResult">The result type command should returned.</typeparam>
-    public interface ICommandHandler<in TCommand, TCommandResult> : IRequestHandler<TCommand, TCommandResult>
-    where TCommand : ICommand<TCommandResult>
-    where TCommandResult : notnull
+    /// <typeparam name="TCommandResponse">The result type command should returned.</typeparam>
+    public interface ICommandHandler<in TCommand, TCommandResponse> : IRequestHandler<TCommand, TCommandResponse>
+    where TCommand : ICommand<TCommandResponse>
+    where TCommandResponse : notnull
     {
     }
 }
