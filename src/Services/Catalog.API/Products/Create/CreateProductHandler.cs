@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.CQRS;
+using Catalog.API.Models;
 using Catalog.API.Request.Product;
 using Catalog.API.Response.Product;
 using Marten;
