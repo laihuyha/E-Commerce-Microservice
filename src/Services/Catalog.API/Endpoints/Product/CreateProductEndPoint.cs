@@ -18,7 +18,6 @@ namespace Catalog.API.Endpoints.Product
 
         public override void Configure()
         {
-            AllowAnonymous();
             Post("/");
             // Require authorization if needed
             Group<ProductGroupEndPoints>();
