@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Catalog.API.Products
+namespace Catalog.API.Models
 {
     public class Product
     {
