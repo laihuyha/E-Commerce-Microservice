@@ -1,0 +1,19 @@
+services:
+  catalog.db:
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=123456
+    volumes:
+      - ./db/catalogdb_data:/var/lib/mongodb/data
+    ports:
+      - 27017:27017 ## Port must be 27017 do not change it
+
+  catalog.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - MongoDb__Host=catalog.db
+      - MongoDb__Credentials__UserName=root
+      - MongoDb__Credentials__Password=123456
+    ports:
+      - "8080:80"
