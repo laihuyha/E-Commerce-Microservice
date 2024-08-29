@@ -4,16 +4,16 @@
 
 ## Use Case
 
-- Listing Product and Categories, able to search product
-- CRUD Operation
-  - Listing Products and Categories
-  - Get Product by ProductId
-  - Get Products by Category
-  - Create new Product
-  - Update existed product
-  - Delete product
-  - Sorting and Filtering product
-  - Pagination
+*   Listing Product and Categories, able to search product
+*   CRUD Operation
+    *   Listing Products and Categories
+    *   Get Product by ProductId
+    *   Get Products by Category
+    *   Create new Product
+    *   Update existed product
+    *   Delete product
+    *   Sorting and Filtering product
+    *   Pagination
 
 ## Endpoint
 
@@ -31,8 +31,8 @@ Overall, Clean Architecture still best for almost projects but not mine cause Ca
 
 ## Design Pattern
 
-- CQRS : Command Query Responsibility Segregation divide operation into commands (Write to DB) and queries (Read from DB)
-- Mediator: Reduce chaotic dependencies between objects, reducing direct dependencies and simplifying communications.
+*   CQRS : Command Query Responsibility Segregation divide operation into commands (Write to DB) and queries (Read from DB)
+*   Mediator: Reduce chaotic dependencies between objects, reducing direct dependencies and simplifying communications.
 
 ## FastEndPoint
 
@@ -43,30 +43,43 @@ Performance is on par with Minimal APIs. It's faster, uses less memory and does 
 
 We're going to use **FastEndPoint** inside this Project cause we may not want to use at another Service so we don't add it into BuildingBlock as Abstraction which will use for all Service
 
-- **Some Note** :
+*   **Some Note** :
+    
+    ```cs
+    public override void Configure()
+    {
+        Post("/products");
+        EnableAntiforgery();
+        AllowFileUploads();
+    }
+    ```
+    
+    This Configure method must be overridden and use this method to configure how the endpoint should be listening to incoming requests.
+    
+    *   HandleAsync()  and ExecuteAsync() are the endpoint handler methods. this method is called for each request received.
+    *   ExecuteAsync() is often used for return DTO (As my knowledge).
+*   **Endpoint Types**
 
-  ```cs
-  public override void Configure()
-  {
-      Post("/products");
-      EnableAntiforgery();
-      AllowFileUploads();
-  }
-  ```
+           There are 4 different endpoint base types you can inherit from.
 
-  This Configure method must be overridden and use this method to configure how the endpoint should be listening to incoming requests.
+1.  **Endpoint\<TRequest>** - Use this type if there's only a request DTO. You can however send any object to the client that can be serialized as a response with this generic overload.
+2.  **Endpoint\<TRequest,TResponse>** - Use this type if you have both request and response DTOs. The benefit of this generic overload is that you get strongly-typed access to properties of the DTO when doing integration testing and validations.
+3.  **EndpointWithoutRequest** - Use this type if there's no request nor response DTO. You can send any serializable object as a response here also.
+4.  **EndpointWithoutRequest\<TResponse>** - Use this type if there's no request DTO but there is a response DTO.
 
-  - HandleAsync()  and ExecuteAsync() are the endpoint handler methods. this method is called for each request received.
-  - ExecuteAsync() is often used for return DTO (As my knowledge).
+     It is also possible to define endpoints with **EmptyRequest** and **EmptyResponse** if needed like so:
 
-- **Hook Methods**
-  - The following 5 hook methods allow you to do something before and after DTO validation as well as handler execution.
-  - **OnBeforeValidate()** override this method if you'd like to do something to the request dto before it gets validated.
-  - **OnAfterValidate()** override this method if you'd like to do something to the request dto after it gets validated.
-  - **OnValidationFailed()** override this method if you'd like to do something when validation fails.
-  - **OnBeforeHandle()** override this method if you'd like to do something to the request dto before the handler is executed.
-  - **OnAfterHandle()** override this method if you'd like to do something after the handler is execute
-- ### [Head-To-Head Benchmark](https://fast-endpoints.com/benchmarks#head-to-head-benchmark)
+     `public class MyEndpoint : Endpoint<EmptyRequest,EmptyResponse> { }`
+
+*   **Hook Methods**
+    *   The following 5 hook methods allow you to do something before and after DTO validation as well as handler execution.
+    *   **OnBeforeValidate()** override this method if you'd like to do something to the request dto before it gets validated.
+    *   **OnAfterValidate()** override this method if you'd like to do something to the request dto after it gets validated.
+    *   **OnValidationFailed()** override this method if you'd like to do something when validation fails.
+    *   **OnBeforeHandle()** override this method if you'd like to do something to the request dto before the handler is executed.
+    *   **OnAfterHandle()** override this method if you'd like to do something after the handler is execute
+*   ### [Head-To-Head Benchmark](https://fast-endpoints.com/benchmarks#head-to-head-benchmark)
+    
 
 <table><tbody><tr><td style="border:0px solid rgb(234, 234, 234);padding:0px 0.571429em 0.571429em;vertical-align:bottom;"><strong>Method</strong></td><td style="border:0px solid rgb(234, 234, 234);padding:0px 0.571429em 0.571429em;text-align:right;vertical-align:bottom;"><strong>Mean</strong></td><td><strong>Ratio</strong></td><td><strong>Gen0</strong></td><td><strong>Gen1</strong></td><td><strong>Allocated</strong></td><td><strong>Alloc-Ratio</strong></td></tr><tr><td>FastEndpoints</td><td style="border:0px solid rgb(234, 234, 234);padding:0.571429em;text-align:right;">40.32 μs</td><td style="border:0px solid rgb(234, 234, 234);padding:0.571429em;text-align:right;">1.00</td><td>2.0000</td><td>-</td><td style="border:0px solid rgb(234, 234, 234);padding:0.571429em;text-align:right;">16.71 KB</td><td>1.00</td></tr><tr><td>ASP NET 7 Minimal APIs</td><td style="border:0px solid rgb(234, 234, 234);padding:0.571429em;text-align:right;">44.07 μs</td><td>1.09</td><td>2.1000</td><td>-</td><td style="border:0px solid rgb(234, 234, 234);padding:0.571429em;text-align:right;">17.07 KB</td><td>1.02</td></tr><tr><td>FastEndpoints (CodeGen)</td><td style="border:0px solid rgb(234, 234, 234);padding:0.571429em;text-align:right;">44.67 μs</td><td>1.11</td><td>2.0000</td><td>-</td><td style="border:0px solid rgb(234, 234, 234);padding:0.571429em;text-align:right;">16.75 KB</td><td>1.00</td></tr><tr><td>FastEndpoints (Scoped Validator)</td><td style="border:0px solid rgb(234, 234, 234);padding:0.571429em;text-align:right;">57.83 μs</td><td>1.43</td><td>3.4000</td><td>0.1000</td><td style="border:0px solid rgb(234, 234, 234);padding:0.571429em;text-align:right;">28.08 KB</td><td>1.68</td></tr><tr><td>ASP NET 7 MVC Controller</td><td style="border:0px solid rgb(234, 234, 234);padding:0.571429em;text-align:right;">63.97 μs</td><td>1.59</td><td>2.8000</td><td>0.1000</td><td style="border:0px solid rgb(234, 234, 234);padding:0.571429em;text-align:right;">23.58 KB</td><td>1.41</td></tr></tbody></table>
 
@@ -76,4 +89,4 @@ _**Why choose FastEndPoint but not Minimal?**_ : The first thing MinimalAPI has 
 
 Document Database by storing Catalog as JSON type. Also, we can use MongoDB as an alternative solution.
 
-**Marten** is a `_library_` that transforms PostgreSQL into _.NET transactional Document DB_.
+**MongoDB.Entities** is a helpful library for .NET to query and handle data with MongoDb server.
