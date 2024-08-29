@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using MongoDB.Entities;
 
-namespace Catalog.API.Products
+namespace Catalog.API.Models
 {
     public class Product : Entity, ICreatedOn, IModifiedOn
     {
