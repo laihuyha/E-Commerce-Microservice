@@ -1,10 +1,7 @@
 using Catalog.API.Extensions;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MongoDB.Driver;
-using MongoDB.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,21 +19,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-// Config the lifetime of the application
-_ = app.AddAppBuilderExtension(); //Extension Method
-await DB.InitAsync("CatalogDb", MongoClientSettings.FromConnectionString(builder.Configuration.GetConnectionString("MongoDb")));
 
-#region need to generate API
-// await app.GenerateApiClientsAndExitAsync(
-// c =>
-// {
-//     c.SwaggerDocumentName = "v1"; //must match doc name above
-//     c.Language = GenerationLanguage.CSharp;
-//     c.OutputPath = Path.Combine(app.Environment.WebRootPath, "ApiClients", "CSharp");
-//     c.ClientNamespaceName = "MyCompanyName";
-//     c.ClientClassName = "MyCsClient";
-//     c.CreateZipArchive = true; //if you'd like a zip file as well
-// });
-#endregion
+_ = app.AddAppBuilderExtension(builder.Configuration); //Extension Method
+
+// Config the lifetime of the application
+app.Lifetime.ApplicationStarted.Register(async () =>
+{
+    await AppBuilderExtension.InitializeConnection(builder.Configuration);
+});
 
 app.Run();
