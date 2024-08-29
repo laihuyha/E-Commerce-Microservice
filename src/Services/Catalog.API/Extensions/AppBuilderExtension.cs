@@ -21,7 +21,7 @@ namespace Catalog.API.Extensions
             }).UseSwaggerGen();
             return appBuilder;
         }
-
+      
         public static async Task InitializeConnection(IConfiguration config)
         {
             var host = config["MongoDb:Host"];

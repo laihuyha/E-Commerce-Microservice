@@ -28,4 +28,4 @@ app.Lifetime.ApplicationStarted.Register(async () =>
     await AppBuilderExtension.InitializeConnection(builder.Configuration);
 });
 
-app.Run();
+await app.RunAsync();

@@ -1,6 +1,7 @@
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,6 +24,7 @@ namespace Catalog.API.Extensions
             {
                 cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly);
             });
+          
             return services;
         }
     }
