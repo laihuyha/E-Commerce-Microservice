@@ -1,24 +1,19 @@
 services:
   catalog.db:
-    container_name: catalog.db
-    restart: always
-    volumes:
-      - postgres_catalog:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=CatalogDb
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=123456
+    volumes:
+      - ./db/catalogdb_data:/var/lib/mongodb/data
     ports:
-      - 5432:5432
-  
+      - 27017:27017 ## Port must be 27017 do not change it
+
   catalog.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ConnectionStrings__CatalogDatabase=Server=catalog.db;Port=5432;Database=CatalogDb;User Id=postgres;Password=postgres;Include Error Detail=true
-      ## src\Services\Catalog.API\Extensions\BuilderServiceExtension.cs has Marten config for create connect to DB
-      ## `options.Connection(configuration.GetConnectionString("CatalogDatabase")!)` == `ConnectionStrings__CatalogDatabase`
-      ## when we dockerize API we cannot use localhost as server anymore cuz docker can't understand or recognize the IP or Host of server
-      ## so we use available service for Host `catalog.db` make docker can recognize the host and connect to it.
+      - ASPNETCORE_URLS=http://+:80
+      - MongoDb__Host=catalog.db
+      - MongoDb__Credentials__UserName=root
+      - MongoDb__Credentials__Password=123456
     ports:
-      - "8080:8080"
+      - "8080:80"

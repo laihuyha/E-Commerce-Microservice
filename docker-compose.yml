@@ -1,13 +1,16 @@
 # Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
+# You'll need docker-compose.orverride.yml file for env variables and something more than it.
 services:
   catalog.db:
-    image: postgres
+    image: mongo
 
   catalog.api:
     image: 1811063460/catalog.api:latest
     build:
       context: .
       dockerfile: src/Services/Catalog.API/Dockerfile
+    depends_on:
+      - catalog.db
 
 volumes:
-  postgres_catalog:
+  catalogdb_data:

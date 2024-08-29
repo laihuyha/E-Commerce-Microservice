@@ -1,29 +1,28 @@
-# Base image with SDK for building
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 as build
 WORKDIR /app
+EXPOSE 80
 
-# Copy the solution and project files
-COPY E-Commerce-Microservice.sln .
+# copy all .csproj file and restore as distinct layer
+COPY E-Commerce-Microservice.sln E-Commerce-Microservice.sln
+
 COPY src/Services/Catalog.API/Catalog.API.csproj src/Services/Catalog.API/Catalog.API.csproj
+
 COPY src/BuildingBlocks/BuildingBlocks.csproj src/BuildingBlocks/BuildingBlocks.csproj
 
-# Restore dependencies
+# restore package
 RUN dotnet restore E-Commerce-Microservice.sln
 
-# Build the project
+# copy the app folders over
 COPY src/Services/Catalog.API src/Services/Catalog.API
+
 COPY src/BuildingBlocks src/BuildingBlocks
+
 WORKDIR /app/src/Services/Catalog.API
-RUN dotnet build -c Release -o /app/build
 
-# Publish the project
-FROM build AS publish
-RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish -c Release -o /app/src/out
 
-# Runtime-only base image for running the application
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+# build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY --from=publish /app/publish .
-EXPOSE 8080
-EXPOSE 8081
+COPY --from=build /app/src/out .
 ENTRYPOINT ["dotnet", "Catalog.API.dll"]
