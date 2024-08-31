@@ -1,3 +1,4 @@
+using Catalog.API.Utils;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Hosting;
@@ -22,8 +23,9 @@ namespace Catalog.API.Extensions
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly);
+                cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
             });
-          
+
             return services;
         }
     }
