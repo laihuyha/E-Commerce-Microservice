@@ -22,7 +22,7 @@ namespace Catalog.API.Endpoints.Product
             Post("/");
             // Require authorization if needed
             Group<ProductGroupEndPoints>();
-
+            ThrowIfAnyErrors();
             Options(opt =>
             {
                 opt.WithName("CreateProduct");
@@ -35,16 +35,6 @@ namespace Catalog.API.Endpoints.Product
 
         public override async Task HandleAsync(CreateProductRequest request, CancellationToken ct)
         {
-            if (ValidationFailed)
-            {
-                foreach (ValidationFailure failure in ValidationFailures)
-                {
-                    var propertyName = failure.PropertyName;
-                    var errorMessage = failure.ErrorMessage;
-                }
-                ThrowIfAnyErrors();
-            }
-
             try
             {
                 // Map the request to the command
