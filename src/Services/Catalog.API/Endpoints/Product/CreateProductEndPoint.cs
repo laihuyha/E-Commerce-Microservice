@@ -4,7 +4,6 @@ using Catalog.API.Endpoints.Groups;
 using Catalog.API.Request.Product;
 using Catalog.API.Response.Product;
 using FastEndpoints;
-using FluentValidation.Results;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Builder;

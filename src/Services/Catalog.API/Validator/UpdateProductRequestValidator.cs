@@ -4,17 +4,19 @@ using FluentValidation;
 
 namespace Catalog.API.Validator
 {
-    public class CreateProductRequestValidator : Validator<CreateProductRequest>
+    public class UpdateProductRequestValidator : Validator<UpdateProductRequest>
     {
-        public CreateProductRequestValidator()
+        public UpdateProductRequestValidator()
         {
+            _ = RuleFor(e => e.Id).NotEmpty().NotNull().WithMessage("Missing ProductId to udpate!");
+
             _ = RuleFor(e => e.Name)
                     .NotEmpty()
                     .WithMessage("Your product's name is required");
 
             _ = RuleFor(e => e.Category)
-                    .NotEmpty().WithMessage("Please choose the category for product!")
                     .Must(e => !e.Exists(x => string.IsNullOrEmpty(x)))
+                    .When(e => e.Category.Count > 0)
                     .WithMessage("Little cunt! Check category again!");
 
             _ = RuleFor(x => x.ImageFile)
@@ -25,4 +27,5 @@ namespace Catalog.API.Validator
             _ = RuleFor(x => x.Price).GreaterThan(0).WithMessage("Value of project should be greater than 0");
         }
     }
+
 }
