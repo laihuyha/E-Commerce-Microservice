@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using BuildingBlocks.CQRS;
 using System.Text;
+using System;
 
 namespace Catalog.API.Utils
 {
@@ -19,30 +20,41 @@ namespace Catalog.API.Utils
 
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-            bool isQueryRequest = typeof(IQuery<TResponse>).IsAssignableFrom(typeof(TRequest));
-            bool isCommandRequest = typeof(ICommand<TResponse>).IsAssignableFrom(typeof(TRequest)) || typeof(ICommand).IsAssignableFrom(typeof(TRequest));
-
+            StringBuilder logMessage = new StringBuilder().AppendLine("--------------------------------------");
             string requestName = typeof(TRequest).Name;
-            // Create log message with a newline separator
-            // https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
-            StringBuilder logMessage = new StringBuilder().AppendLine("--------------------------------------")
-                .AppendLine("\x1b[1;92m");
-
-            if (isQueryRequest)
+            
+            try
             {
-                logMessage.AppendLine($"Handling {requestName}").AppendLine($"-----> Query: {@request}");
-            }
+                bool isQueryRequest = typeof(IQuery<TResponse>).IsAssignableFrom(typeof(TRequest));
+                bool isCommandRequest = typeof(ICommand<TResponse>).IsAssignableFrom(typeof(TRequest)) || typeof(ICommand).IsAssignableFrom(typeof(TRequest));
 
-            if (isCommandRequest)
+                // Create log message with a newline separator
+                // https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+                logMessage.AppendLine("\x1b[1;92m");
+
+                if (isQueryRequest)
+                {
+                    logMessage.AppendLine($"Handling {requestName}").AppendLine($"-----> Query: {@request}");
+                }
+
+                if (isCommandRequest)
+                {
+                    logMessage.AppendLine($"Handling command {requestName}").AppendLine($"-----> Command: {@request}");
+                }
+                logMessage.AppendLine("\x1b[0m");
+                logMessage.AppendLine("--------------------------------------");
+                _logger.LogInformation(logMessage.ToString());
+                TResponse response = await next();
+
+                return response;
+            }
+            catch (Exception ex)
             {
-                logMessage.AppendLine($"Handling command {requestName}").AppendLine($"-----> Command: {@request}");
+                logMessage.AppendLine("\x1b[1;91m");
+                logMessage.AppendLine($"Handling failed{requestName}").AppendLine($"-----> Query: {@request}");
+                logMessage.AppendLine($"Exception: ===>{ex}");
+                return await next();
             }
-            logMessage.AppendLine("\x1b[0m");
-            logMessage.AppendLine("--------------------------------------");
-            _logger.LogInformation(logMessage.ToString());
-            TResponse response = await next();
-
-            return response;
         }
     }
 }
