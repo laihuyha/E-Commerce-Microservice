@@ -1,4 +1,4 @@
-using Catalog.API.Utils;
+using BuildingBlocks.Utils;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Hosting;
