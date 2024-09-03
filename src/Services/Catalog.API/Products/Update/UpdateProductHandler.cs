@@ -19,11 +19,17 @@ namespace Catalog.API.Products.Update
             {
                 var entity = request.Adapt<Product>();
 
-                await DB.Update<Product>().MatchID(request.Id)
+                var result = await DB.UpdateAndGet<Product>().MatchID(request.Id)
                 .ModifyWith(entity)
                 .ExecuteAsync(cancellationToken);
 
+                if (result is null) throw new ProductNotFoundException(request.Id);
+
                 return Unit.Value;
+            }
+            catch (ProductNotFoundException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

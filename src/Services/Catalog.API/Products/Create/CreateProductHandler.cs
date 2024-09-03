@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.CQRS;
+using Catalog.API.Exceptions;
 using Catalog.API.Models;
 using Catalog.API.Request.Product;
 using Catalog.API.Response.Product;
@@ -30,8 +31,7 @@ namespace Catalog.API.Products.Create
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                return null;
+                throw new ProductCreateException("Error while creating product!", ex);
             }
         }
     }
