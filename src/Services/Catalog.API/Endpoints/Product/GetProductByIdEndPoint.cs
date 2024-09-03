@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Catalog.API.Endpoints.Groups;
-using Catalog.API.Exceptions;
 using Catalog.API.Request.Product;
 using FastEndpoints;
 using Mapster;
@@ -26,7 +25,7 @@ namespace Catalog.API.Endpoints.Product
                 opt.WithName("GetProductById");
                 opt.WithSummary("Get product by Id");
                 opt.WithDescription("Get a products with Id.");
-                opt.Produces<GetProductsResponse>(StatusCodes.Status200OK);
+                opt.Produces<GetProductByIdResponse>(StatusCodes.Status200OK);
                 opt.ProducesProblem(StatusCodes.Status404NotFound);
                 opt.ProducesProblem(StatusCodes.Status400BadRequest);
             });
@@ -39,12 +38,10 @@ namespace Catalog.API.Endpoints.Product
             /// More about models binding via this link: https://fast-endpoints.com/docs/model-binding#built-in-request-binding
 
             string productId = Route<string>("id");
-            if (string.IsNullOrEmpty(productId)) throw new ArgumentNullException(nameof(productId));
+            if (string.IsNullOrEmpty(productId)) throw new ArgumentException($"{nameof(productId)} is null");
 
             var result = await _sender.Send(new GetProductByIdRequest(productId), ct);
-
-            if (result.Product == null) throw new ProductNotFoundException();
-
+            
             var response = result.Adapt<GetProductByIdResponse>();
             await SendOkAsync(response, ct);
 

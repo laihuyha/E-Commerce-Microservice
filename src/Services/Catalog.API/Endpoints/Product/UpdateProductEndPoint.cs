@@ -24,7 +24,7 @@ namespace Catalog.API.Endpoints.Product
                 opt.WithName("UpdateProduct");
                 opt.WithSummary("Update a product.");
                 opt.WithDescription("Update a product by Id.");
-                opt.Produces<GetProductsResponse>(StatusCodes.Status200OK);
+                opt.Produces<Unit>(StatusCodes.Status200OK);
                 opt.ProducesProblem(StatusCodes.Status400BadRequest);
                 opt.ProducesProblem(StatusCodes.Status500InternalServerError);
             });
@@ -32,16 +32,8 @@ namespace Catalog.API.Endpoints.Product
 
         public override async Task HandleAsync(UpdateProductRequest req, CancellationToken ct)
         {
-            try
-            {
-                await _sender.Send(req, ct);
-                await SendOkAsync(ct);
-            }
-            catch
-            {
-                await SendErrorsAsync(cancellation: ct);
-                throw;
-            }
+            await _sender.Send(req, ct);
+            await SendOkAsync(ct);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Catalog.API.Endpoints.Product
 
         public override async Task HandleAsync(GetProductByCategoryRequest req, CancellationToken ct)
         {
-            Response.Product.GetProductByCategoryResult result = await _sender.Send(new GetProductByCategoryRequest(req.Category), ct);
+            var result = await _sender.Send(new GetProductByCategoryRequest(req.Category), ct);
             if (!result.Products.Any()) await SendNotFoundAsync(ct);
             GetProductByCategoryResponse response = result.Adapt<GetProductByCategoryResponse>();
             await SendOkAsync(response, ct);
