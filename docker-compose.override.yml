@@ -11,9 +11,12 @@ services:
   catalog.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__Database=mongodb://root:123456@catalog.db:27017
       - MongoDb__Host=catalog.db
       - MongoDb__Credentials__UserName=root
       - MongoDb__Credentials__Password=123456
     ports:
-      - "8080:80"
+      - "6000:8080"
+      - "6060:8081"
