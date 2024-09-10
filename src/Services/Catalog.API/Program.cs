@@ -1,3 +1,4 @@
+using Catalog.API.Data;
 using Catalog.API.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +27,7 @@ _ = app.AddAppBuilderExtension(builder.Configuration); //Extension Method
 app.Lifetime.ApplicationStarted.Register(async () =>
 {
     await AppBuilderExtension.InitializeConnection(builder.Configuration);
+    await DbInitializer.Init(app.Services, app.Environment);
 });
 
 await app.RunAsync();

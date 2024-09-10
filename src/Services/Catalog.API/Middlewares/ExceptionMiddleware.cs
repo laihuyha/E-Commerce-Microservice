@@ -10,7 +10,9 @@ using Microsoft.Extensions.Logging;
 namespace Catalog.API.Middlewares
 {
     /// <summary>
-    /// More about Handle errors: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-8.0
+    /// Middleware to handle exceptions globally.
+    /// More about handling errors: 
+    /// https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-8.0
     /// </summary>
     public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment host)
     {
@@ -36,7 +38,7 @@ namespace Catalog.API.Middlewares
             }
         }
 
-        private Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             _logger.LogError(exception, "An unexpected error occurred.");
 
@@ -46,26 +48,27 @@ namespace Catalog.API.Middlewares
             {
                 Title = title,
                 Status = status,
-                Detail = _host.IsDevelopment() ? BuildDetailString(details, exception) : null,
-                Instance = _host.IsDevelopment() ? exception.Source : null
+                Detail = _host.IsDevelopment() ? BuildDetailString(details, exception) : details,
+                Instance = _host.IsDevelopment() ? exception.Source : context.Request.Path
             };
 
             context.Response.ContentType = "application/problem+json";
-            context.Response.StatusCode = (int)status;
+            context.Response.StatusCode = status ?? StatusCodes.Status500InternalServerError;
 
             var json = JsonSerializer.Serialize(problemDetails, JsonSerializerOptions);
-            return context.Response.WriteAsync(json);
+
+            await context.Response.WriteAsync(json);
         }
 
         private (string title, int? status, string details) GetExceptionDetails(Exception exception)
         {
             return exception switch
             {
-                NotFoundException => (exception.GetType().Name, StatusCodes.Status404NotFound, exception.Message),
-                DbErrorException => (exception.GetType().Name, StatusCodes.Status500InternalServerError, exception.Message),
-                InternalException => (exception.GetType().Name, StatusCodes.Status500InternalServerError, exception.Message),
-                BadRequestException => (exception.GetType().Name, StatusCodes.Status400BadRequest, exception.Message),
-                _ => (exception.GetType().Name, StatusCodes.Status500InternalServerError, exception.Message)
+                NotFoundException => (nameof(NotFoundException), StatusCodes.Status404NotFound, exception.Message),
+                DbErrorException => (nameof(DbErrorException), StatusCodes.Status500InternalServerError, exception.Message),
+                InternalException => (nameof(InternalException), StatusCodes.Status500InternalServerError, exception.Message),
+                BadRequestException => (nameof(BadRequestException), StatusCodes.Status400BadRequest, exception.Message),
+                _ => ("UnexpectedError", StatusCodes.Status500InternalServerError, exception.Message)
             };
         }
 
