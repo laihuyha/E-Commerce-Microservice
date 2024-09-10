@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Http;
 namespace Catalog.API.Endpoints.Product
 {
     public record GetProductsResponse(IEnumerable<Models.Product> Products);
-    public class GetProductsEndPoint(ISender sender) : EndpointWithoutRequest<GetProductsResponse>
+    public class GetProductsEndPoint(ISender sender) : Endpoint<GetProductsRequest, GetProductsResponse>
     {
         private readonly ISender _sender = sender;
 
@@ -30,9 +30,9 @@ namespace Catalog.API.Endpoints.Product
             });
         }
 
-        public override async Task HandleAsync(CancellationToken cancellationToken)
+        public override async Task HandleAsync(GetProductsRequest request, CancellationToken cancellationToken)
         {
-            var result = await _sender.Send(new GetProductsRequest(), cancellationToken);
+            var result = await _sender.Send(request, cancellationToken);
             var response = result.Adapt<GetProductsResponse>();
             await SendOkAsync(response, cancellationToken);
         }
