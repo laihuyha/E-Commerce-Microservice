@@ -1,6 +1,7 @@
 using BuildingBlocks.Utils;
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,8 +13,11 @@ namespace Catalog.API.Extensions
     {
         public static IServiceCollection AddServiceExtension(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
+            // DI Register
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
             services.AddSingleton(typeof(ILogger<Program>), typeof(Logger<Program>));
+
+
             services.AddFastEndpoints().SwaggerDocument(o =>
             {
                 o.DocumentSettings = s =>
@@ -29,6 +33,8 @@ namespace Catalog.API.Extensions
                 cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
             });
 
+            // Health check
+            services.AddHealthChecks().AddMongoDb(configuration.GetConnectionString("Database")!);
             return services;
         }
     }

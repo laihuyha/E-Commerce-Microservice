@@ -3,7 +3,9 @@ using System.Threading.Tasks;
 using Catalog.API.Middlewares;
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using MongoDB.Entities;
@@ -22,9 +24,19 @@ namespace Catalog.API.Extensions
             }).UseSwaggerGen();
 
             appBuilder.UseMiddleware<ExceptionMiddleware>();
+
+            //Health check
+            appBuilder.UseHealthChecks("/health", new HealthCheckOptions
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
+
+            appBuilder.UseHsts();
+            appBuilder.UseHttpsRedirection();
             return appBuilder;
         }
-      
+
         public static async Task InitializeConnection(IConfiguration config)
         {
             var host = config["MongoDb:Host"];
