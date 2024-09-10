@@ -1,8 +1,10 @@
+using BuildingBlocks.Utils;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Catalog.API.Extensions
 {
@@ -10,6 +12,8 @@ namespace Catalog.API.Extensions
     {
         public static IServiceCollection AddServiceExtension(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
+            services.AddSingleton<ILoggerFactory, LoggerFactory>();
+            services.AddSingleton(typeof(ILogger<Program>), typeof(Logger<Program>));
             services.AddFastEndpoints().SwaggerDocument(o =>
             {
                 o.DocumentSettings = s =>
@@ -22,8 +26,9 @@ namespace Catalog.API.Extensions
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly);
+                cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
             });
-          
+
             return services;
         }
     }

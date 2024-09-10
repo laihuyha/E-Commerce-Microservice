@@ -4,7 +4,6 @@ using Catalog.API.Endpoints.Groups;
 using Catalog.API.Request.Product;
 using Catalog.API.Response.Product;
 using FastEndpoints;
-using FluentValidation.Results;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -22,7 +21,7 @@ namespace Catalog.API.Endpoints.Product
             Post("/");
             // Require authorization if needed
             Group<ProductGroupEndPoints>();
-
+            ThrowIfAnyErrors();
             Options(opt =>
             {
                 opt.WithName("CreateProduct");
@@ -35,36 +34,17 @@ namespace Catalog.API.Endpoints.Product
 
         public override async Task HandleAsync(CreateProductRequest request, CancellationToken ct)
         {
-            if (ValidationFailed)
-            {
-                foreach (ValidationFailure failure in ValidationFailures)
-                {
-                    var propertyName = failure.PropertyName;
-                    var errorMessage = failure.ErrorMessage;
-                }
-                ThrowIfAnyErrors();
-            }
+            // Map the request to the command
+            var command = request.Adapt<CreateProductRequest>();
 
-            try
-            {
-                // Map the request to the command
-                var command = request.Adapt<CreateProductRequest>();
+            // Send the command using MediatR
+            var result = await _sender.Send(command, ct);
 
-                // Send the command using MediatR
-                var result = await _sender.Send(command, ct);
+            // Map the result to the response
+            var response = result.Adapt<CreateProductResponse>();
 
-                // Map the result to the response
-                var response = result.Adapt<CreateProductResponse>();
-
-                // Send the response with a 201 Created status
-                await SendCreatedAtAsync("GetProductById", response.Id, response, cancellation: ct);
-            }
-            catch
-            {
-                // Log the exception and return a 500 Internal Server Error
-                // _logger.LogError(ex, "Error creating product");
-                // await SendAsync(new ProblemDetails(ValidationFailures, statusCode: StatusCodes.Status500InternalServerError));
-            }
+            // Send the response with a 201 Created status
+            await SendCreatedAtAsync("GetProductById", response.Id, response, cancellation: ct);
         }
     }
 }

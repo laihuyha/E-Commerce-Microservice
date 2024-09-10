@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Threading.Tasks;
+using Catalog.API.Middlewares;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Builder;
@@ -19,6 +20,8 @@ namespace Catalog.API.Extensions
                 cfg.Serializer.Options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                 // cfg.Endpoints.RoutePrefix = "api";
             }).UseSwaggerGen();
+
+            appBuilder.UseMiddleware<ExceptionMiddleware>();
             return appBuilder;
         }
       
