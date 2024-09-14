@@ -1,6 +1,7 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 as build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
-EXPOSE 80
+EXPOSE 8080
+EXPOSE 8081
 
 # copy all .csproj file and restore as distinct layer
 COPY E-Commerce-Microservice.sln E-Commerce-Microservice.sln
@@ -21,8 +22,19 @@ WORKDIR /app/src/Services/Catalog.API
 
 RUN dotnet publish -c Release -o /app/src/out
 
+# Fix run https error on docker
+# Ref: https://learn.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-8.0
+# Generate the development certificate in the build stage
+RUN dotnet dev-certs https --clean \
+    && dotnet dev-certs https --export-path /app/certs/aspnetapp.pfx --password "simplePassword" \
+    && dotnet dev-certs https --trust \
+    && dotnet dev-certs https --check
+
 # build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app/src/out .
+COPY --from=build /app/certs/aspnetapp.pfx /root/.aspnet/https/aspnetapp.pfx
+ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/https/aspnetapp.pfx
+ENV ASPNETCORE_Kestrel__Certificates__Default__Password=simplePassword
 ENTRYPOINT ["dotnet", "Catalog.API.dll"]
