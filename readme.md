@@ -7,14 +7,21 @@
 ### Catalog
 
 * .NET 8 and C# 12
-* MongoDb
-* CQRS using MediatR
-* MongoDB.Entities library for .NET on MongoDb
-* FastEndPoint for build APIs
-* Cross-cutting concerns Logging, Global Exception Handling and Health Checks
 * Vertical Slice Architecture implementation with Feature folders and single .cs file includes different classes in one file
+* CQRS using MediatR
+* FastEndPoint for build APIs
+* MongoDb
+* MongoDB.Entities library for .NET on MongoDb
+* Cross-cutting concerns Logging, Global Exception Handling and Health Checks
 
 ### Basket
+* Vertical Slice Architecture
+* CQRS using MediatR
+* MinimalAPI for build APIs
+* PostgresSQL
+* Marten library for .NET on Postgres.
+* Redis for data caching.
+* Cross-cutting concerns Logging, Global Exception Handling and Health Checks
 
 ### Discount
 

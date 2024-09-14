@@ -3,6 +3,8 @@
 services:
   catalog.db:
     image: mongo
+  basket.db:
+    image: postgres
 
   catalog.api:
     image: 1811063460/catalog.api:latest
@@ -11,6 +13,14 @@ services:
       dockerfile: src/Services/Catalog.API/Dockerfile
     depends_on:
       - catalog.db
+  basket.api:
+    image: 1811063460/basket.api:latest
+    build:
+      context: .
+      dockerfile: src/Services/Basket.API/Dockerfile
+    depends_on:
+      - basket.db
 
 volumes:
   catalogdb_data:
+  basket_data:

@@ -4,9 +4,18 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=123456
     volumes:
-      - ./db/catalogdb_data:/var/lib/mongodb/data
+      - ./db/catalogdb_data:/data/db ### Fix Db location of mongoDb
     ports:
       - 27017:27017 ## Port must be 27017 do not change it
+  basket.db:
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=BasketDb
+    volumes:
+      - ./db/basket_data:/var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
 
   catalog.api:
     environment:
