@@ -8,7 +8,7 @@ namespace BuildingBlocks.CQRS
     /// <br/>
     /// Example: Like Delete() record from DB or Savechange() and we don't care much about result of them.
     /// </summary>
-    public interface ICommand : IRequest<Unit> { }
+    public interface ICommand : IRequest<Unit>;
 
     /// <summary>
     /// Excute command and need the response from DB.
@@ -17,5 +17,5 @@ namespace BuildingBlocks.CQRS
     /// Example: Create, Update, Savechange and Delete incase we need status for some conditional statement.
     /// </summary>
     /// <typeparam name="TReponse"></typeparam>
-    public interface ICommand<out TReponse> : IRequest<TReponse> where TReponse : notnull { }
+    public interface ICommand<out TReponse> : IRequest<TReponse> where TReponse : notnull;
 }
