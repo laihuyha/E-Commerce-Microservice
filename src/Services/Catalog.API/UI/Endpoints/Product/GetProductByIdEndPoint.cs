@@ -36,15 +36,13 @@ namespace Catalog.API.Endpoints.Product
             /// Route<T>() method is only able to handle types that have a static TryParse() method.
             /// See here on how to add parsing support for your own types. (https://fast-endpoints.com/docs/model-binding#supported-dto-property-types)
             /// More about models binding via this link: https://fast-endpoints.com/docs/model-binding#built-in-request-binding
-
             string productId = Route<string>("id");
             if (string.IsNullOrEmpty(productId)) throw new ArgumentException($"{nameof(productId)} is null");
 
             var result = await _sender.Send(new GetProductByIdRequest(productId), ct);
-            
+
             var response = result.Adapt<GetProductByIdResponse>();
             await SendOkAsync(response, ct);
-
         }
     }
 }

@@ -27,5 +27,4 @@ namespace Catalog.API.Validator
             _ = RuleFor(x => x.Price).GreaterThan(0).WithMessage("Value of project should be greater than 0");
         }
     }
-
 }

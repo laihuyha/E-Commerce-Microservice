@@ -14,7 +14,7 @@ namespace Catalog.API.Extensions
 {
     public static class AppBuilderExtension
     {
-        public static IApplicationBuilder AddAppBuilderExtension(this IApplicationBuilder appBuilder, IConfiguration configuration)
+        public static IApplicationBuilder AddAppBuilderExtension(this IApplicationBuilder appBuilder)
         {
             // appBuilder.UseHttpsRedirection();
             appBuilder.UseFastEndpoints(cfg =>
