@@ -60,7 +60,7 @@ namespace Catalog.API.Middlewares
             await context.Response.WriteAsync(json);
         }
 
-        private (string title, int? status, string details) GetExceptionDetails(Exception exception)
+        private static (string title, int? status, string details) GetExceptionDetails(Exception exception)
         {
             return exception switch
             {
