@@ -1,3 +1,4 @@
+using Carter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 
@@ -7,6 +8,7 @@ public static class AppBuilderExtension
 {
     public static WebApplication UseAppBuilderExtension(this WebApplication app)
     {
+        app.MapCarter();
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
