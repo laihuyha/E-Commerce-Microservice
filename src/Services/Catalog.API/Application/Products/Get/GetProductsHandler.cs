@@ -16,6 +16,7 @@ namespace Catalog.API.Products.Get
         private const int MaxPageSize = 30;
 
         public async Task<GetProductsResult> Handle(GetProductsRequest query, CancellationToken ct)
+
         {
             int pageNumber = query.PageNumber ?? DefaultPageNumber;
             int pageSize = query.PageSize.HasValue
@@ -27,6 +28,7 @@ namespace Catalog.API.Products.Get
                 .PageSize(pageSize)
                 .PageNumber(pageNumber)
                 .ExecuteAsync(ct);
+
 
             return new GetProductsResult(products);
         }
