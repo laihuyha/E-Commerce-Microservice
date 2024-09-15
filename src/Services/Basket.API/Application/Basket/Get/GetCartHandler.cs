@@ -5,6 +5,7 @@ using Basket.API.Application.DTO.Response;
 using BuildingBlocks.CQRS;
 using System;
 using Basket.API.Domain.Models;
+using Basket.API.Application.DTO.Results;
 
 namespace Basket.API.Application.Basket.Get;
 

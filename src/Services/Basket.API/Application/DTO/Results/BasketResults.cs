@@ -1,5 +1,6 @@
 using Basket.API.Domain.Models;
 
+namespace Basket.API.Application.DTO.Results;
 /// <summary>
 /// Represents the result of a get cart operation.
 /// </summary>
