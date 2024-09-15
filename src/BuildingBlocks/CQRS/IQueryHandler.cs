@@ -9,6 +9,5 @@ namespace BuildingBlocks.CQRS
     /// <typeparam name="TQueryResult">The result type query should returned.</typeparam>
     public interface IQueryHandler<in TQuery, TQueryResult> : IRequestHandler<TQuery, TQueryResult>
     where TQuery : IQuery<TQueryResult>
-    where TQueryResult : notnull
-    { }
+    where TQueryResult : notnull;
 }

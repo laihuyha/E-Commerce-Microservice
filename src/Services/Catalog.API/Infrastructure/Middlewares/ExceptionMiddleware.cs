@@ -11,7 +11,7 @@ namespace Catalog.API.Middlewares
 {
     /// <summary>
     /// Middleware to handle exceptions globally.
-    /// More about handling errors: 
+    /// More about handling errors:
     /// https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-8.0
     /// </summary>
     public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment host)
@@ -72,7 +72,7 @@ namespace Catalog.API.Middlewares
             };
         }
 
-        private string BuildDetailString(string details, Exception exception)
+        private static string BuildDetailString(string details, Exception exception)
         {
             return $"{details}\nException: ====> {exception.StackTrace}";
         }

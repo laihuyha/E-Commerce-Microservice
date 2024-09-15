@@ -1,7 +1,6 @@
 using BuildingBlocks.Utils;
 using FastEndpoints;
 using FastEndpoints.Swagger;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,12 +10,11 @@ namespace Catalog.API.Extensions
 {
     public static class BuilderServiceExtension
     {
-        public static IServiceCollection AddServiceExtension(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
+        public static IServiceCollection AddServiceExtension(this IServiceCollection services, IConfiguration configuration)
         {
             // DI Register
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
             services.AddSingleton(typeof(ILogger<Program>), typeof(Logger<Program>));
-
 
             services.AddFastEndpoints().SwaggerDocument(o =>
             {
