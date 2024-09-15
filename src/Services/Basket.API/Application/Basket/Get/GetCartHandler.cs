@@ -8,11 +8,11 @@ using Basket.API.Domain.Models;
 
 namespace Basket.API.Application.Basket.Get;
 
-public class GetCartQueryHandler : IQueryHandler<GetCartRequest, GetCartResponse>
+public class GetCartQueryHandler : IQueryHandler<GetCartRequest, GetCartResult>
 {
-    public async Task<GetCartResponse> Handle(GetCartRequest request, CancellationToken cancellationToken)
+    public async Task<GetCartResult> Handle(GetCartRequest request, CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-        return new GetCartResponse(new Cart(Guid.NewGuid().ToString()));
+        return new GetCartResult(new Cart(Guid.NewGuid().ToString()));
     }
 }

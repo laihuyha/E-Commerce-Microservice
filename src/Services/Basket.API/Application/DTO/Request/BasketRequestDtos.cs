@@ -3,4 +3,4 @@ using BuildingBlocks.CQRS;
 
 namespace Basket.API.Application.DTO.Request;
 
-public record GetCartRequest(string UserId) : IQuery<GetCartResponse>;
+public record GetCartRequest(string UserId) : IQuery<GetCartResult>;
