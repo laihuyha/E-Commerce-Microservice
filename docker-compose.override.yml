@@ -5,6 +5,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=123456
     volumes:
       - ./db/catalogdb_data:/data/db ### Fix Db location of mongoDb
+    restart: always
     ports:
       - 27017:27017 ## Port must be 27017 do not change it
   basket.db:
@@ -13,7 +14,8 @@ services:
       - POSTGRES_PASSWORD=123456
       - POSTGRES_DB=BasketDb
     volumes:
-      - ./db/basket_data:/var/lib/postgresql/data/pgdata
+      - ./db/basket_data:/var/lib/postgresql/data
+    restart: always
     ports:
       - 5432:5432
 
@@ -29,3 +31,13 @@ services:
     ports:
       - "6000:8080"
       - "6060:8081"
+  
+  basket.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__Marten=Server=basket.db;Port=5432;Database=BasketDb;User Id=postgres;Password=123456;Include Error Detail=true
+    ports:
+      - "6001:8080"
+      - "6061:8081"

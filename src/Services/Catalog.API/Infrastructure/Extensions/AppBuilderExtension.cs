@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Threading.Tasks;
-using Catalog.API.Middlewares;
+using BuildingBlocks.Exceptions.Middlewares;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using HealthChecks.UI.Client;

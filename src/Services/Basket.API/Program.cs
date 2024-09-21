@@ -9,10 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddBuilderServices(); // Extension Method
+builder.Services.AddBuilderServices(builder.Configuration, builder.Environment); // Extension Method
 
 var app = builder.Build();
 
 app.UseAppBuilderExtension();
 
-app.Run();
+await app.RunAsync();
