@@ -1,19 +1,17 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Basket.API.Application.DTO.Request;
-using Basket.API.Application.DTO.Response;
 using BuildingBlocks.CQRS;
-using System;
-using Basket.API.Domain.Models;
 using Basket.API.Application.DTO.Results;
+using Basket.API.Application.Interfaces;
 
 namespace Basket.API.Application.Basket.Get;
 
-public class GetCartQueryHandler : IQueryHandler<GetCartRequest, GetCartResult>
+public class GetCartQueryHandler(IBasketRepository basketRepository) : IQueryHandler<GetCartRequest, GetCartResult>
 {
     public async Task<GetCartResult> Handle(GetCartRequest request, CancellationToken cancellationToken)
     {
-        await Task.CompletedTask;
-        return new GetCartResult(new Cart(Guid.NewGuid().ToString()));
+        var basket = await basketRepository.GetBasket(request.UserId, cancellationToken);
+        return new GetCartResult(basket);
     }
 }
