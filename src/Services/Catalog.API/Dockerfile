@@ -7,7 +7,7 @@ EXPOSE 8081
 COPY E-Commerce-Microservice.sln E-Commerce-Microservice.sln
 
 COPY src/Services/Catalog.API/Catalog.API.csproj src/Services/Catalog.API/Catalog.API.csproj
-
+COPY src/Services/Basket.API/Basket.API.csproj src/Services/Basket.API/Basket.API.csproj
 COPY src/BuildingBlocks/BuildingBlocks.csproj src/BuildingBlocks/BuildingBlocks.csproj
 
 # restore package
