@@ -21,6 +21,7 @@
 * PostgresSQL
 * Marten library for .NET on Postgres.
 * Redis for data caching.
+* Scrutor library for scaning and registering services.
 * Cross-cutting concerns Logging, Global Exception Handling and Health Checks
 
 ### Discount
