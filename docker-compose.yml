@@ -2,9 +2,9 @@
 # You'll need docker-compose.orverride.yml file for env variables and something more than it.
 services:
   catalog.db:
-    image: mongo
+    image: mongo:7.0.14
   basket.db:
-    image: postgres
+    image: postgres:16.4
 
   catalog.api:
     image: 1811063460/catalog.api:latest
@@ -20,7 +20,14 @@ services:
       dockerfile: src/Services/Basket.API/Dockerfile
     depends_on:
       - basket.db
+      - distributedcache
+  distributedcache:
+    image: redis
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
 
 volumes:
   catalogdb_data:
   basket_data:
+  redis_data:
