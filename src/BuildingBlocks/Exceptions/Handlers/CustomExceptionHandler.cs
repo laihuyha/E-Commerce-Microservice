@@ -76,6 +76,7 @@ public class CustomExceptionHandler(ILogger<CustomExceptionHandler> logger) : IE
         }
 
         httpContext.Response.StatusCode = StatusCode;
+        
         await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken: cancellationToken);
         return true;
     }

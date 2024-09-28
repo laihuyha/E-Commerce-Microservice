@@ -69,6 +69,7 @@ public static class BuilderServiceExtension
         services.AddHealthChecks()
             .AddNpgSql(configuration.GetConnectionString("Marten")!)
             .AddRedis(configuration.GetConnectionString("Redis")!);
+      
         return services;
     }
 }
