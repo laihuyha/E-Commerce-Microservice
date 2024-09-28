@@ -32,31 +32,31 @@ public class CustomExceptionHandler(ILogger<CustomExceptionHandler> logger) : IE
             (
                 exception.Message,
                 exception.GetType().Name,
-                httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError
+                StatusCodes.Status500InternalServerError
             ),
             ValidationException =>
             (
                 exception.Message,
                 exception.GetType().Name,
-                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest
+                StatusCodes.Status400BadRequest
             ),
             BadRequestException =>
             (
                 exception.Message,
                 exception.GetType().Name,
-                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest
+                StatusCodes.Status400BadRequest
             ),
             NotFoundException =>
             (
                 exception.Message,
                 exception.GetType().Name,
-                httpContext.Response.StatusCode = StatusCodes.Status404NotFound
+                StatusCodes.Status404NotFound
             ),
             _ =>
             (
                 exception.Message,
                 exception.GetType().Name,
-                httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError
+                StatusCodes.Status500InternalServerError
             )
         };
 
@@ -75,6 +75,7 @@ public class CustomExceptionHandler(ILogger<CustomExceptionHandler> logger) : IE
             problemDetails.Extensions.Add("ValidationErrors", validationException.Errors);
         }
 
+        httpContext.Response.StatusCode = StatusCode;
         await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken: cancellationToken);
         return true;
     }
