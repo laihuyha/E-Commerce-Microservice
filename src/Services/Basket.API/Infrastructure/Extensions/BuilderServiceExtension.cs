@@ -43,11 +43,33 @@ public static class BuilderServiceExtension
             }
         }).UseLightweightSessions();
 
+        services.AddStackExchangeRedisCache(opt =>
+        {
+            opt.Configuration = configuration.GetConnectionString("Redis");
+            // opt.InstanceName = "BasketCache";
+        });
+
         //Repositories
         _ = services.AddScoped<IBasketRepository, BasketRepository>();
+        _ = services.Decorate<IBasketRepository, CachedBasketRepository>();
+
+        #region Example
+        // _ = services.AddScoped<IBasketRepository>(provider =>
+        // {
+        //     var repository = provider.GetRequiredService<BasketRepository>();
+        //     var distributedCache = provider.GetRequiredService<IDistributedCache>();
+        //     return new CachedBasketRepository(repository, distributedCache);
+        // });
+        #endregion Example
 
         // Exception Handler
         _ = services.AddExceptionHandler<CustomExceptionHandler>();
+
+        // HealthCheck
+        services.AddHealthChecks()
+            .AddNpgSql(configuration.GetConnectionString("Marten")!)
+            .AddRedis(configuration.GetConnectionString("Redis")!);
+      
         return services;
     }
 }

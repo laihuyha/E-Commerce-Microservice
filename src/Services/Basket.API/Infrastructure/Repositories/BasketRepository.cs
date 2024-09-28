@@ -48,7 +48,7 @@ public class BasketRepository(IDocumentSession session) : IBasketRepository
         }
         catch (Exception ex)
         {
-            throw new BasketStoreException(BuildingBlocks.Enums.Operations.Deleting, ex.ToString());
+            throw new BasketStoreException("Error while storing Cart", ex);
         }
     }
 }

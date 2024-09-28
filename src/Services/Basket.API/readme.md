@@ -21,6 +21,9 @@
 
 *   CQRS : Command Query Responsibility Segregation divides operation into commands (Write to DB) and queries (Read from DB)
 *   Mediator: Reduce chaotic dependencies between objects, reduce direct dependencies and simplify communications.
+*   Proxy
+*   Decorator
+*   Cache-aside
 
 ## Minimal API
 

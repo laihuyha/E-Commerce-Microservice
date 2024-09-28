@@ -30,11 +30,11 @@ namespace Catalog.API.Endpoints.Product
             });
         }
 
-        public override async Task HandleAsync(GetProductsRequest request, CancellationToken cancellationToken)
+        public override async Task HandleAsync(GetProductsRequest request, CancellationToken ct)
         {
-            var result = await _sender.Send(request, cancellationToken);
+            var result = await _sender.Send(request, ct);
             var response = result.Adapt<GetProductsResponse>();
-            await SendOkAsync(response, cancellationToken);
+            await SendOkAsync(response, ct);
         }
     }
 }
