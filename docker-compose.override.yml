@@ -5,7 +5,6 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=123456
     volumes:
       - ./db/catalogdb_data:/data/db ### Fix Db location of mongoDb
-    restart: always
     ports:
       - 27017:27017 ## Port must be 27017 do not change it
   basket.db:
@@ -15,7 +14,6 @@ services:
       - POSTGRES_DB=BasketDb
     volumes:
       - ./db/basket_data:/var/lib/postgresql/data
-    restart: always
     ports:
       - 5432:5432
 
@@ -45,7 +43,6 @@ services:
 
   distributedcache:
     container_name: distributedcache
-    restart: always
     ports:
       - "6379:6379"
     volumes:

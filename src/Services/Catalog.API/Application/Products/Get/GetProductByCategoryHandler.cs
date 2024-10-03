@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.CQRS;
@@ -8,13 +10,14 @@ using MongoDB.Entities;
 
 namespace Catalog.API.Products.Get
 {
-    public class GetProductByCategoryQueryHandler : IQueryHandler<GetProductByCategoryRequest, GetProductByCategoryResult>
+    internal class GetProductByCategoryQueryHandler : IQueryHandler<GetProductByCategoryRequest, GetProductByCategoryResult>
     {
         public async Task<GetProductByCategoryResult> Handle(GetProductByCategoryRequest query, CancellationToken cancellationToken)
         {
+            List<string> categoryIdsToSearch = [query.Category];
             var products = string.IsNullOrEmpty(query.Category)
                 ? await DB.Find<Product>().ExecuteAsync(cancellationToken)
-                : await DB.Find<Product>().ManyAsync(x => x.Category.Contains(query.Category), cancellationToken);
+                : await DB.Find<Product>().ManyAsync(x => x.Categories.Select(category => category.ID).Intersect(categoryIdsToSearch).Any(), cancellationToken);
             return new GetProductByCategoryResult(products);
         }
     }

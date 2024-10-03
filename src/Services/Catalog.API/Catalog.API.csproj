@@ -10,7 +10,6 @@
     <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="8.1.0" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1" />
     <PackageReference Include="FastEndpoints" Version="5.28.0" />
-    <!-- <PackageReference Include="FastEndpoints.ClientGen.Kiota" Version="5.28.0" /> -->
     <PackageReference Include="FastEndpoints.Swagger" Version="5.28.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.6" />
     <PackageReference Include="MongoDB.Entities" Version="23.1.1" />

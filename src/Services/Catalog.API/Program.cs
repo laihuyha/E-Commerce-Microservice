@@ -3,6 +3,7 @@ using Catalog.API.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MongoDB.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,10 @@ _ = app.AddAppBuilderExtension(); //Extension Method
 app.Lifetime.ApplicationStarted.Register(async () =>
 {
     await AppBuilderExtension.InitializeConnection(builder.Configuration);
-    await DbInitializer.Init(app.Services, app.Environment);
+    await DB.MigrationsAsync([
+        new _001_DbInitializer(app.Services, app.Environment),
+    ]);
+
 });
 
 await app.RunAsync();
