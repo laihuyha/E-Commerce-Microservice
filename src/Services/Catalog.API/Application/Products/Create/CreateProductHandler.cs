@@ -16,15 +16,16 @@ namespace Catalog.API.Products.Create
         {
             try
             {
-                //Create Product Entity from command Obj
                 var product = new Product
                 {
                     Name = request.Name,
-                    Category = request.Category,
                     Description = request.Description,
                     ImageFile = request.ImageFile,
                     Price = request.Price,
                 };
+
+                await product.AddCategories(request.Categories);
+
                 // Save to DB
                 await DB.SaveAsync(product, cancellation: cancellationToken);
                 return new CreateProductResponse(product.ID);

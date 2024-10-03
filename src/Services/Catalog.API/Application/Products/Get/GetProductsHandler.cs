@@ -1,3 +1,7 @@
+using System;
+using System.Data;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.CQRS;
@@ -23,7 +27,25 @@ namespace Catalog.API.Products.Get
                 ? (query.PageSize.Value > MaxPageSize ? MaxPageSize : query.PageSize.Value)
                 : DefaultPageSize;
 
+            Expression<Func<Product, bool>> matchQueryExpression = x => true;
+
+            if (query.BrandId is not null)
+            {
+                matchQueryExpression = x => x.Brand.ID == query.BrandId;
+            }
+            if (query.CateIds.Count > 0)
+            {
+                // Continue add into existing matchQueryExpression && x.Categories.Select(e => e.ID).Intersect(query.CategoryIds).Any();
+                matchQueryExpression = x => matchQueryExpression.Compile()(x) && x.Categories.Select(e => e.ID).Intersect(query.CateIds).Any();
+            }
+            if (query.AttrIds.Count > 0)
+            {
+                // Continue add into existing matchQueryExpression && x.Attributes.Select(e => e.ID).Intersect(query.AttrIds).Any();
+                matchQueryExpression = x => matchQueryExpression.Compile()(x) && x.Attributes.Select(e => e.ID).Intersect(query.AttrIds).Any();
+            }
+
             var (products, totalCount, pageCount) = await DB.PagedSearch<Product>()
+                .Match(matchQueryExpression)
                 .Sort(prod => prod.Ascending("Name").Descending("CreatedOn")) // or Sort(prod => prod.Name, Order.Ascending) for simple usage.
                 .PageSize(pageSize)
                 .PageNumber(pageNumber)
