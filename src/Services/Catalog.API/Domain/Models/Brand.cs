@@ -1,18 +1,13 @@
-using Catalog.API.Models;
+using System;
 using MongoDB.Entities;
 
 namespace Catalog.API.Domain.Models;
 
-public class Brand : Entity
+public class Brand : Entity, ICreatedOn, IModifiedOn
 {
     public string Name { get; set; } = default!;
     public string Description { get; set; } = default!;
     public string LogoUrl { get; set; } = default!;
-
-    public Many<Product, Brand> Products { get; set; }
-
-    public Brand()
-    {
-        this.InitOneToMany(() => Products);
-    }
+    public DateTime CreatedOn { get; set; }
+    public DateTime ModifiedOn { get; set; }
 }

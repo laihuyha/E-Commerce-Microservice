@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Catalog.API.Domain.Models;
 using MongoDB.Entities;
 
-namespace Catalog.API.Models
+namespace Catalog.API.Domain.Models
 {
     public class Product : Entity, ICreatedOn, IModifiedOn
     {
