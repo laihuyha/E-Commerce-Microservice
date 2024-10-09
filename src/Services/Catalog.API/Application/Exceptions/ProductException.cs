@@ -1,7 +1,7 @@
 using System;
 using BuildingBlocks.Enums;
 using BuildingBlocks.Exceptions;
-using Catalog.API.Models;
+using Catalog.API.Domain.Models;
 
 namespace Catalog.API.Exceptions
 {
