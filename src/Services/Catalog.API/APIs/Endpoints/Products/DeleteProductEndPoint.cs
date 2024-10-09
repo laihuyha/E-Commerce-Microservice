@@ -1,13 +1,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Catalog.API.Endpoints.Groups;
-using Catalog.API.Request.Product;
+using Catalog.API.Request;
 using FastEndpoints;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
-namespace Catalog.API.Endpoints.Product
+namespace Catalog.API.Endpoints.Products
 {
     public class DeleteProductEndPoint(ISender sender) : EndpointWithoutRequest
     {

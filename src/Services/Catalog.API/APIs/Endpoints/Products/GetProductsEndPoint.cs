@@ -1,17 +1,18 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Catalog.API.Application.DTO;
 using Catalog.API.Endpoints.Groups;
-using Catalog.API.Request.Product;
+using Catalog.API.Request;
 using FastEndpoints;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
-namespace Catalog.API.Endpoints.Product
+namespace Catalog.API.Endpoints.Products
 {
-    public record GetProductsResponse(IEnumerable<Models.Product> Products);
+    public record GetProductsResponse(IReadOnlyList<ProductDto> Products);
     public class GetProductsEndPoint(ISender sender) : Endpoint<GetProductsRequest, GetProductsResponse>
     {
         private readonly ISender _sender = sender;
@@ -33,8 +34,8 @@ namespace Catalog.API.Endpoints.Product
         public override async Task HandleAsync(GetProductsRequest request, CancellationToken ct)
         {
             var result = await _sender.Send(request, ct);
-            var response = result.Adapt<GetProductsResponse>();
-            await SendOkAsync(response, ct);
+            var response = result.Results.Adapt<IReadOnlyList<ProductDto>>();
+            await SendOkAsync(new GetProductsResponse(response), ct);
         }
     }
 }
