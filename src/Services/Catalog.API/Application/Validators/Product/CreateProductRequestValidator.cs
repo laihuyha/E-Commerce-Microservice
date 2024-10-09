@@ -1,5 +1,4 @@
-using System.Linq;
-using Catalog.API.Request.Product;
+using Catalog.API.Request;
 using FastEndpoints;
 using FluentValidation;
 
@@ -13,9 +12,9 @@ namespace Catalog.API.Validator
                     .NotEmpty()
                     .WithMessage("Your product's name is required");
 
-            _ = RuleFor(e => e.Categories)
+            _ = RuleFor(e => e.CategoryIds)
                     .NotEmpty().WithMessage("Please choose the category for product!")
-                    .Must(e => e.Count > 0 && e.Select(e => e) is not null)
+                    .Must(e => e.Count != 0)
                     .WithMessage("Little cunt! Check category again!");
 
             _ = RuleFor(x => x.ImageFile)

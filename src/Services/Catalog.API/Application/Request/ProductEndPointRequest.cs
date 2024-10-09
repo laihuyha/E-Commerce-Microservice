@@ -1,15 +1,16 @@
 using System.Collections.Generic;
 using BuildingBlocks.CQRS;
+using Catalog.API.Application.Request;
+using Catalog.API.Application.Response;
 using Catalog.API.Domain.Models;
-using Catalog.API.Response.Product;
 using MediatR;
 
-namespace Catalog.API.Request.Product
+namespace Catalog.API.Request
 {
-    public record CreateProductRequest(string Name, string Description, List<Category> Categories, string ImageFile, decimal Price) : ICommand<CreateProductResponse>;
-    public record UpdateProductRequest(string Id, string Name, string Description, List<string> Category, string ImageFile, decimal Price) : ICommand<Unit>;
+    public record CreateProductRequest(string Name, string Description, string ImageFile, decimal Price, string BrandId, List<string> CategoryIds, List<string> AttributeIds) : ICommand<CreateResponse>;
+    public record UpdateProductRequest(string Id, string Name, string Description, string ImageFile, decimal Price, string BrandId, List<string> CategoryIds, List<string> AttributeIds) : ICommand<Unit>;
     public record DeleteProductRequest(string Id) : ICommand<Unit>;
-    public record GetProductsRequest(List<string> CateIds, List<string> AttrIds, string BrandId, int? PageNumber = 1, int? PageSize = 10) : IQuery<GetProductsResult>;
-    public record GetProductByIdRequest(string Id) : IQuery<GetProductByIdResult>;
-    public record GetProductByCategoryRequest(string Category) : IQuery<GetProductByCategoryResult>;
+    public record GetProductsRequest : QueryBase, IQuery<GetAllResponse<Product>>;
+    public record GetProductByIdRequest(string Id) : IQuery<GetByIdResponse<Product>>;
+    public record GetProductByFiltersRequest : ProductQueryFilter, IQuery<GetByFiltersReponse<Product>>;
 }
