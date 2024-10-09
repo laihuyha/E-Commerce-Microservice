@@ -1,5 +1,8 @@
+using System.Reflection;
 using Catalog.API.Data;
 using Catalog.API.Extensions;
+using Mapster;
+using Mapster.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,6 +24,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//Mapping Configuration With "IMapFrom" Interface
+TypeAdapterConfig.GlobalSettings.ScanInheritedTypes(Assembly.GetExecutingAssembly());
 
 _ = app.AddAppBuilderExtension(); //Extension Method
 
