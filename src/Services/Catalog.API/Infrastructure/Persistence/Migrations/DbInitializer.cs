@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Catalog.API.Domain.Enums;
 using Catalog.API.Domain.Models;
-using Catalog.API.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -240,10 +239,6 @@ public class _001_DbInitializer(IServiceProvider serviceProvider, IHostEnvironme
                 product.Brand = panasonicBrand.ToReference();
                 product.Brand = new(panasonicBrand.ID);
                 await product.SaveAsync(); // Save để lưu BrandID
-
-                // Thêm sản phẩm vào Brand
-                await panasonicBrand.Products.AddAsync(product);
-                await panasonicBrand.SaveAsync();
             }
         }
     }
