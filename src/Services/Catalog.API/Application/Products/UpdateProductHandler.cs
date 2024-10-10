@@ -19,6 +19,8 @@ namespace Catalog.API.Application.Products
         {
             try
             {
+                var oldBrandId = DB.Queryable<Product>().Where(e => e.ID == request.Id).Select(a => a.BrandId).FirstOrDefault();
+
                 var entity = request.Adapt<Product>();
 
                 var result = await DB.UpdateAndGet<Product>().MatchID(request.Id)
@@ -29,12 +31,11 @@ namespace Catalog.API.Application.Products
                 // check valid of retrieved data
                 if (request.BrandId is not null)
                 {
-                    result.Brand = null;
-                    await result.SaveAsync(cancellation: cancellationToken);
+                    //Remove existing relationship
+                    await DB.Entity<Brand>(oldBrandId).Products.RemoveAsync(result, cancellation: cancellationToken);
 
                     var brand = await DB.Find<Brand>().OneAsync(request.BrandId, cancellationToken) ?? throw new NotFoundException("Brand not found.");
-                    brand.ToReference();
-                    result.Brand = new(brand);
+                    await brand.Products.AddAsync(result, cancellation: cancellationToken);
                 }
 
                 if (request.AttributeIds is not null && request.AttributeIds.Count != 0)

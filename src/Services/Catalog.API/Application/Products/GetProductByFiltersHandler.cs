@@ -35,7 +35,9 @@ namespace Catalog.API.Application.Products
 
             if (query.BrandId is not null)
             {
-                _ = products.RemoveWhere(e => e.Brand == null || e.Brand.ID != query.BrandId);
+                var brandProducts = DB.Entity<Brand>(query.BrandId).Products.ToArray();
+                var intersectProducts = brandProducts.Intersect(products);
+                products = intersectProducts.ToHashSet();
             }
 
             if (query.SearchText is not null)

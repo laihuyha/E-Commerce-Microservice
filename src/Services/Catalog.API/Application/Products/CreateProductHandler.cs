@@ -23,6 +23,7 @@ namespace Catalog.API.Application.Products
                     Description = request.Description,
                     ImageFile = request.ImageFile,
                     Price = request.Price,
+                    BrandId = request.BrandId
                 };
 
                 var categories = await DB.Find<Category>().ManyAsync(x => request.CategoryIds.Contains(x.ID), cancellationToken);
@@ -30,19 +31,18 @@ namespace Catalog.API.Application.Products
                     ? await DB.Find<ProductAttribute>().ManyAsync(x => request.AttributeIds.Contains(x.ID), cancellationToken)
                     : [];
 
-                var brand = await DB.Find<Brand>().OneAsync(request.BrandId, cancellationToken);
+                await product.SaveAsync(cancellation: cancellationToken);
 
+                // Add references to Brand
+                var brand = await DB.Find<Brand>().OneAsync(request.BrandId, cancellationToken);
                 if (brand is not null)
                 {
-                    _ = brand.ToReference();
-                    product.Brand = new(brand);
+                    await brand.Products.AddAsync(product, cancellation: cancellationToken);
                 }
                 else
                 {
                     throw new NotFoundException("This brand is not available.");
                 }
-
-                await product.SaveAsync(cancellation: cancellationToken);
 
                 // Cuz a product need to belong to at least one category so we check the validation of category
                 if (categories.Count == 0) throw new NotFoundException("Invalid Category.");
