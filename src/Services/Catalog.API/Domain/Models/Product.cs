@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Entities;
 
@@ -20,7 +21,7 @@ namespace Catalog.API.Domain.Models
         public DateTime CreatedOn { get; set; }
         public DateTime ModifiedOn { get; set; }
 
-        public One<Brand> Brand { get; set; }
+        public string BrandId { get; set; }
         [OwnerSide]
         public Many<Category, Product> Categories { get; set; }
         public Many<ProductAttribute, Product> Attributes { get; set; }
@@ -49,6 +50,12 @@ namespace Catalog.API.Domain.Models
             {
                 await AddAttribute(attribute);
             }
+        }
+
+        public Brand GetBrand()
+        {
+            var brand = DB.Queryable<Brand>().Where(e => e.ID == BrandId).Select(e => e).FirstOrDefault();
+            return brand;
         }
     }
 }

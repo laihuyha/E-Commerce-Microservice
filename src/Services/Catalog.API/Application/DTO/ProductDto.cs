@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Catalog.API.Domain.Models;
 using Mapster;
+using MongoDB.Entities;
 
 namespace Catalog.API.Application.DTO;
 
@@ -11,7 +12,7 @@ public class ProductDto : IMapFrom<Product>
     public string Description { get; set; }
     public string ImageFile { get; set; }
     public decimal Price { get; set; }
-    public string Brand { get; set; }
+    public BrandDto Brand { get; set; }
     public List<CategoryDto> Categories { get; set; }
     public List<AttributeDto> Attributes { get; set; }
 
@@ -19,6 +20,7 @@ public class ProductDto : IMapFrom<Product>
     {
         config.NewConfig<Product, ProductDto>()
             .Map(dest => dest.Categories, source => source.Categories.Adapt<List<CategoryDto>>())
-            .Map(dest => dest.Attributes, source => source.Attributes.Adapt<List<AttributeDto>>());
+            .Map(dest => dest.Attributes, source => source.Attributes.Adapt<List<AttributeDto>>())
+            .Map(dest => dest.Brand, source => source.GetBrand().Adapt<BrandDto>());
     }
 }

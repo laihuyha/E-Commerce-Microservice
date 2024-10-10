@@ -236,9 +236,11 @@ public class _001_DbInitializer(IServiceProvider serviceProvider, IHostEnvironme
                 await product.AddCategories([cameraCate]);
 
                 var panasonicBrand = brands.Find(e => e.Name.StartsWith("Pana"));
-                product.Brand = panasonicBrand.ToReference();
-                product.Brand = new(panasonicBrand.ID);
+                product.BrandId = panasonicBrand.ID;
                 await product.SaveAsync(); // Save để lưu BrandID
+
+                // Thêm sản phẩm vào Brand
+                await panasonicBrand.Products.AddAsync(product);
             }
         }
     }
