@@ -18,7 +18,7 @@ namespace Catalog.API.Application.Products
             {
                 var product = await DB.Find<Product>().OneAsync(request.Id, cancellationToken) ?? throw new ProductNotFoundException(request.Id);
                 await DB.Entity<Brand>(product.BrandId).Products.RemoveAsync(product, cancellation: cancellationToken);
-                await product.DeleteAsync(cancellation: cancellationToken);
+                await product.DeleteAsync();
 
                 return Unit.Value;
             }

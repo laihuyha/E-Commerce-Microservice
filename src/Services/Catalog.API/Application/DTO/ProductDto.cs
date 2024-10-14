@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Catalog.API.Domain.Models;
 using Mapster;
-using MongoDB.Entities;
 
 namespace Catalog.API.Application.DTO;
 
