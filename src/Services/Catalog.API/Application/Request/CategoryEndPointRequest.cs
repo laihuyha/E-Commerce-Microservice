@@ -1,11 +1,12 @@
 using BuildingBlocks.CQRS;
-using Catalog.API.Response.Product;
+using Catalog.API.Application.Response;
+using Catalog.API.Domain.Models;
 using MediatR;
 
 namespace Catalog.API.Application.Request;
 
-public record CreateCategoryRequest(string Name, string ParentCateId, string Description) : ICommand<CreateProductResponse>;
+public record CreateCategoryRequest(string Name, string ParentCateId, string Description) : ICommand<CreateResponse>;
 public record UpdateCategoryRequest(string Id, string Name, string ParentCateId, string Description) : ICommand<Unit>;
 public record DeleteCategoryRequest(string Id) : ICommand<Unit>;
-public record GetCategoryRequest(int? PageNumber = 1, int? PageSize = 10) : IQuery<GetProductsResult>;
-public record GetCategoryByIdRequest(string Id) : IQuery<GetProductByIdResult>;
+public record GetCategoriesRequest : QueryBase, IQuery<GetAllResponse<Category>>;
+public record GetCategoryByIdRequest(string Id) : IQuery<GetByIdResponse<Category>>;
