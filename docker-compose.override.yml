@@ -1,19 +1,19 @@
 services:
-  catalog.db:
+  mongo:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=123456
     volumes:
-      - ./db/catalogdb_data:/data/db ### Fix Db location of mongoDb
+      - ./db/mongodb_data:/data/db ### Fix Db location of mongoDb
     ports:
       - 27017:27017 ## Port must be 27017 do not change it
-  basket.db:
+  postgres:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=123456
       - POSTGRES_DB=BasketDb
     volumes:
-      - ./db/basket_data:/var/lib/postgresql/data
+      - ./db/postgres_data:/var/lib/postgresql/data
     ports:
       - 5432:5432
 
@@ -22,8 +22,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__Database=mongodb://root:123456@catalog.db:27017
-      - MongoDb__Host=catalog.db
+      - ConnectionStrings__Database=mongodb://root:123456@mongo:27017
+      - MongoDb__Host=mongo
       - MongoDb__Credentials__UserName=root
       - MongoDb__Credentials__Password=123456
     ports:
@@ -35,11 +35,26 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__Marten=Server=basket.db;Port=5432;Database=BasketDb;User Id=postgres;Password=123456;Include Error Detail=true
+      - ConnectionStrings__Marten=Server=postgres;Port=5432;Database=BasketDb;User Id=postgres;Password=123456;Include Error Detail=true
       - ConnectionStrings__Redis=distributedcache
     ports:
       - "6001:8080"
       - "6061:8081"
+
+  keycloak:
+    container_name: keycloak
+    command: start-dev # Run the keycloak in dev mode https://www.keycloak.org/nightly/server/containers
+    environment:
+      # Enable health and metrics support
+      - KC_HEALTH_ENABLED=true
+      - ENV KC_METRICS_ENABLED=true
+      # Configure Keycloak admin credentials
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    volumes:
+      - ./db/identity:/opt/keycloak/data
+    ports:
+      - 18080:8080
 
   distributedcache:
     container_name: distributedcache

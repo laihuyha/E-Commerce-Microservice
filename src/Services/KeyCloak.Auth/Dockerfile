@@ -15,10 +15,9 @@ COPY src/BuildingBlocks/BuildingBlocks.csproj src/BuildingBlocks/BuildingBlocks.
 RUN dotnet restore E-Commerce-Microservice.sln
 
 # Copy the app folders over
-COPY src/Services/Catalog.API src/Services/Catalog.API
-COPY src/BuildingBlocks src/BuildingBlocks
+COPY src/Services/KeyCloak.Auth src/Services/KeyCloak.Auth
 
-WORKDIR /app/src/Services/Catalog.API
+WORKDIR /app/src/Services/KeyCloak.Auth
 
 # Fix run HTTPS error on Docker
 # Generate the development certificate in the build stage
@@ -35,4 +34,4 @@ COPY --from=build /app/src/out .
 COPY --from=build /app/certs/aspnetapp.pfx /root/.aspnet/https/aspnetapp.pfx
 ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/https/aspnetapp.pfx
 ENV ASPNETCORE_Kestrel__Certificates__Default__Password=simplePassword
-ENTRYPOINT ["dotnet", "Catalog.API.dll"]
+ENTRYPOINT ["dotnet", "KeyCloak.Auth.dll"]
