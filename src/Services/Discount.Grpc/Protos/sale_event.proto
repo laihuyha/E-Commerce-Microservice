@@ -1,0 +1,43 @@
+﻿syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Discount.Grpc";
+
+package sale_event;
+
+service SaleEventProtoService{
+  rpc GetSaleEvent (GetSaleEventRequest) returns (SaleEvent);
+  rpc CreateSaleEvent (CreateSaleEventRequest) returns (SaleEvent);
+  rpc UpdateSaleEvent (UpdateSaleEventRequest) returns (SaleEvent);
+  rpc DeleteSaleEvent (DeleteSaleEventRequest) returns (DeleteSaleEventResponse);
+}
+
+message GetSaleEventRequest {
+  int32 id = 1;
+}
+
+message SaleEvent {
+  int32 id = 1;
+  string description = 2;
+  double sale_percent = 3;
+  repeated string product_affected_ids = 4;
+  google.protobuf.Timestamp start_date = 5;
+  google.protobuf.Timestamp end_date = 6;
+}
+
+message CreateSaleEventRequest {
+  SaleEvent coupon = 1;
+}
+
+message UpdateSaleEventRequest {
+  SaleEvent coupon = 1;
+}
+
+message DeleteSaleEventRequest {
+  int32 id = 1;
+}
+
+message DeleteSaleEventResponse {
+  bool success = 1;
+}
