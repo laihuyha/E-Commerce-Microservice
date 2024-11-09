@@ -1,12 +1,11 @@
-﻿using System.Reflection;
-using Discount.Grpc.Data;
+﻿using Discount.Grpc.Data;
 using Discount.Grpc.Services.MappingProfile;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Discount.Grpc.Extensions;
+namespace Discount.Grpc.Services.Extensions;
 
 public static class BuilderServiceExtension
 {

@@ -2,7 +2,7 @@
 using System.Linq;
 using Google.Protobuf.WellKnownTypes;
 
-namespace Discount.Grpc.Extensions;
+namespace Discount.Grpc.Services.Extensions;
 
 public class ProtoConversionExtension
 {
