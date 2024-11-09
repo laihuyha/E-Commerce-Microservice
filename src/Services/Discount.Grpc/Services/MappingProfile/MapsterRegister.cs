@@ -12,8 +12,8 @@ public class MapsterRegister : IRegister
         // In your mapping configuration
         config.NewConfig<DateTime?, Timestamp>()
               .MapWith(src => src.HasValue
-                    ? Timestamp.FromDateTime(DateTime.SpecifyKind(src.Value, DateTimeKind.Utc))
-                    : null);
+                  ? Timestamp.FromDateTime(DateTime.SpecifyKind(src.Value, DateTimeKind.Utc))
+                  : null);
 
         config.NewConfig<Timestamp, DateTime?>()
               .MapWith(src => src != null ? src.ToDateTime() : null);

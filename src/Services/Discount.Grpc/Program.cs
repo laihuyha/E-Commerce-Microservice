@@ -1,6 +1,6 @@
 using Discount.Grpc.Data.Seed;
-using Discount.Grpc.Extensions;
 using Discount.Grpc.Services;
+using Discount.Grpc.Services.Extensions;
 using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
