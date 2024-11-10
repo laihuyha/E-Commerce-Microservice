@@ -6,7 +6,6 @@ using BuildingBlocks.Exceptions.Handler;
 using BuildingBlocks.Utils;
 using Carter;
 using Marten;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
