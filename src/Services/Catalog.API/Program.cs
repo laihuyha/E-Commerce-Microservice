@@ -1,7 +1,6 @@
 using System.Reflection;
 using Catalog.API.Data;
 using Catalog.API.Extensions;
-using Catalog.API.Infrastructure.Extensions;
 using Mapster;
 using Mapster.Utils;
 using Microsoft.AspNetCore.Builder;
@@ -38,6 +37,7 @@ app.Lifetime.ApplicationStarted.Register(async () =>
     await DB.MigrationsAsync([
         new _001_DbInitializer(app.Services, app.Environment),
     ]);
+
 });
 
 await app.RunAsync();

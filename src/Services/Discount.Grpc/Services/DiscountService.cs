@@ -1,138 +1,125 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿// DiscountService.cs
+
+using System;
 using System.Threading.Tasks;
 using Discount.Grpc.Data;
 using Discount.Grpc.Models.Exceptions;
-using Discount.Grpc.Models.Validators;
 using Discount.Grpc.Services.Extensions;
 using Grpc.Core;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Discount.Grpc.Services
+namespace Discount.Grpc.Services;
+
+public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 {
-    public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
+    private readonly DataContext              _dbContext;
+    private readonly ILogger<DiscountService> _logger;
+
+    public DiscountService(DataContext dbContext, ILogger<DiscountService> logger)
     {
-        private readonly DataContext              _dbContext;
-        private readonly ILogger<DiscountService> _logger;
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        _logger    = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
 
-        public DiscountService(DataContext dbContext, ILogger<DiscountService> logger)
+    public override async Task<Coupon> GetDiscount(GetDiscountRequest request, ServerCallContext context)
+    {
+        try
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            _logger    = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
+            _logger.LogInformation("Getting discount for product: {ProductName}", request.ProductName);
 
-        public override async Task<Coupon> GetDiscount(GetDiscountRequest request, ServerCallContext context)
-        {
-            return await ExecuteServiceOperation(async () =>
+            var coupon = await _dbContext.Coupons
+                                         .FirstOrDefaultAsync(e => e.ProductName.Equals(request.ProductName));
+
+            if (coupon == null)
             {
-                _logger.LogInformation("Getting discount for product: {ProductName}", request.ProductName);
-                var coupon = await GetCouponByProductNameAsync(request.ProductName);
-                return coupon.Adapt<Coupon>();
-            }, request.ProductName);
-        }
-
-        public override async Task<Coupon> CreateDiscount(CreateDiscountRequest request, ServerCallContext context)
-        {
-            return await ExecuteServiceOperation(async () =>
-            {
-                var newCoupon = request.Coupon.Adapt<Models.Coupon>();
-                var res       = new Models.Coupon();
-                await SaveEntityWithValidation(request, () =>
-                {
-                    var res1 = _dbContext.Coupons.Add(newCoupon);
-                    res = res1.Entity;
-                });
-                return res.Adapt<Coupon>();
-            }, request.Coupon?.ProductName);
-        }
-
-        public override async Task<Coupon> UpdateDiscount(UpdateDiscountRequest request, ServerCallContext context)
-        {
-            return await ExecuteServiceOperation(async () =>
-            {
-                var updatedCoupon = request.Coupon.Adapt<Models.Coupon>();
-                await SaveEntityWithValidation(request, () => _dbContext.Coupons.Update(updatedCoupon));
-
-                return request.Coupon;
-            }, request.Coupon?.ProductName);
-        }
-
-        public override async Task<DeleteDiscountResponse> DeleteDiscount(DeleteDiscountRequest request,
-            ServerCallContext                                                                   context)
-        {
-            return await ExecuteServiceOperation(async () =>
-            {
-                var coupon = await _dbContext.Coupons.FindAsync(request.Id)
-                             ?? throw new NotFoundException($"Coupon with id: {request.Id} does not exist");
-
-                await SaveEntityWithValidation(request, () => _dbContext.Coupons.Remove(coupon));
-
-                return new DeleteDiscountResponse { Success = true };
-            }, request.Id.ToString());
-        }
-
-        private async Task<T> ExecuteServiceOperation<T>(Func<Task<T>> operation, string identifier)
-        {
-            try
-            {
-                return await operation();
+                throw new NotFoundException($"Coupon not found for product: {request.ProductName}");
             }
-            catch (Exception ex) when (ex is not RpcException)
-            {
-                _logger.LogError(ex, "Operation failed for identifier: {Identifier}", identifier);
-                throw ex.ToRpcException();
-            }
-        }
 
-        private async Task SaveEntityWithValidation(object request, Action action)
+            return coupon.Adapt<Coupon>();
+        }
+        catch (Exception ex) when (ex is not RpcException)
         {
-            ValidateDiscountRequest(request);
-            action();
-            var saveResult = await _dbContext.SaveChangesAsync();
-            if (saveResult <= 0)
-            {
-                throw new DbOperationException("Database operation failed");
-            }
+            _logger.LogError(ex, "Error getting discount for product: {ProductName}", request.ProductName);
+            throw ex.ToRpcException();
         }
+    }
 
-        private async Task<Models.Coupon> GetCouponByProductNameAsync(string productName)
-        {
-            var coupon = await _dbContext.Coupons.AsNoTracking()
-                                         .FirstOrDefaultAsync(e => e.ProductName.Equals(productName));
-
-            return coupon ?? throw new NotFoundException($"Coupon not found for product: {productName}");
-        }
-
-        private static void ValidateDiscountRequest(object request)
+    public override async Task<Coupon> CreateDiscount(CreateDiscountRequest request, ServerCallContext context)
+    {
+        try
         {
             request.ValidateNotNull();
+            request.Coupon.ValidateNotNull();
 
-            // Validate based on the type of the request
-            switch (request)
-            {
-                case CreateDiscountRequest createRequest:
-                    createRequest.Coupon.ValidateNotNull();
-                    var createValidator = new CreateDiscountRequestValidator();
-                    var createResults   = createValidator.Validate(createRequest);
-                    createResults.ValidateErrorHandler();
-                    break;
+            _logger.LogInformation("Creating discount for product: {ProductName}", request.Coupon.ProductName);
 
-                case UpdateDiscountRequest updateRequest:
-                    updateRequest.Coupon.ValidateNotNull();
-                    var updateValidator = new UpdateDiscountValidator();
-                    var updateResults   = updateValidator.Validate(updateRequest);
-                    updateResults.ValidateErrorHandler();
-                    break;
-                case DeleteDiscountRequest deleteRequest:
-                    if (deleteRequest.Id <= 0)
-                        throw new RpcException(new Status(StatusCode.InvalidArgument, "Id is required"));
-                    break;
-                default:
-                    throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid request type"));
-            }
+            var newCoupon = request.Coupon.Adapt<Models.Coupon>();
+            _dbContext.Coupons.Add(newCoupon);
+
+            await SaveChangesWithValidation();
+
+            return request.Coupon;
+        }
+        catch (Exception ex) when (ex is not RpcException)
+        {
+            _logger.LogError(ex, "Error creating discount for product: {ProductName}", request.Coupon?.ProductName);
+            throw ex.ToRpcException();
+        }
+    }
+
+    public override async Task<Coupon> UpdateDiscount(UpdateDiscountRequest request, ServerCallContext context)
+    {
+        try
+        {
+            request.ValidateNotNull();
+            request.Coupon.ValidateNotNull();
+
+            _logger.LogInformation("Updating discount for product: {ProductName}", request.Coupon.ProductName);
+
+            var newCoupon = request.Coupon.Adapt<Models.Coupon>();
+            _dbContext.Coupons.Update(newCoupon);
+
+            await SaveChangesWithValidation();
+
+            return request.Coupon;
+        }
+        catch (Exception ex) when (ex is not RpcException)
+        {
+            _logger.LogError(ex, "Error updating discount for product: {ProductName}", request.Coupon?.ProductName);
+            throw ex.ToRpcException();
+        }
+    }
+
+    public override async Task<DeleteDiscountResponse> DeleteDiscount(DeleteDiscountRequest request,
+        ServerCallContext                                                                   context)
+    {
+        try
+        {
+            _logger.LogInformation("Deleting discount with ID: {Id}", request.Id);
+
+            var coupon = await _dbContext.Coupons.FindAsync(request.Id)
+                         ?? throw new NotFoundException($"Coupon with id: {request.Id} does not exist");
+
+            _dbContext.Coupons.Remove(coupon);
+            await SaveChangesWithValidation();
+
+            return new DeleteDiscountResponse { Success = true };
+        }
+        catch (Exception ex) when (ex is not RpcException)
+        {
+            _logger.LogError(ex, "Error deleting discount with ID: {Id}", request.Id);
+            throw ex.ToRpcException();
+        }
+    }
+
+    private async Task SaveChangesWithValidation()
+    {
+        var saveResult = await _dbContext.SaveChangesAsync();
+        if (saveResult <= 0)
+        {
+            throw new DbOperationException("Database operation failed");
         }
     }
 }
