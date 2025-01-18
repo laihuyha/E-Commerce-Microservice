@@ -11,7 +11,6 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.MapGrpcService<DiscountService>();
-app.MapGrpcService<SaleEventService>();
 
 app.MapGet("/",
     () =>

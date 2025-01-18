@@ -16,8 +16,7 @@ public static class DbInitializer
         var       dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
 
         await dataContext.Database.MigrateAsync();
-        if (dataContext.SaleEvents.Any() && dataContext.Coupons.Any())
-            Console.WriteLine("Database is already initialized ");
+
         if (!dataContext.Coupons.Any())
         {
             Models.Coupon[] coupons =
@@ -69,38 +68,6 @@ public static class DbInitializer
                 }
             ];
             dataContext.Coupons.AddRange(coupons);
-        }
-
-        if (!dataContext.SaleEvents.Any())
-        {
-            Models.SaleEvent[] saleEvents =
-            [
-                new()
-                {
-                    Id          = 1,
-                    Description = "Lorem Ipsum",
-                    SalePercent = 10,
-                    StartDate   = DateTime.Now.AddDays(10),
-                    EndDate     = DateTime.Now.AddDays(20)
-                },
-                new()
-                {
-                    Id          = 2,
-                    Description = "Lorem Ipsum",
-                    SalePercent = 5,
-                    StartDate   = DateTime.Now.AddDays(21),
-                    EndDate     = DateTime.Now.AddDays(41)
-                },
-                new()
-                {
-                    Id          = 3,
-                    Description = "Lorem Ipsum",
-                    SalePercent = 50,
-                    StartDate   = DateTime.Now.AddDays(30),
-                    EndDate     = DateTime.Now.AddDays(50)
-                }
-            ];
-            dataContext.SaleEvents.AddRange(saleEvents);
         }
 
         await dataContext.SaveChangesAsync();
