@@ -23,7 +23,7 @@ public class GrpcDiscountServiceClient
     public async Task<Coupon> GetDiscountAsync(string productName, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Calling Grpc Service");
-        var channel = GrpcChannel.ForAddress(_configuration["GrpcAuction"]);
+        var channel = GrpcChannel.ForAddress(_configuration["GrpcConfigs:DiscountUrl"]);
         var client = new DiscountProtoService.DiscountProtoServiceClient(channel);
         var request = new GetDiscountRequest { ProductName = productName };
 

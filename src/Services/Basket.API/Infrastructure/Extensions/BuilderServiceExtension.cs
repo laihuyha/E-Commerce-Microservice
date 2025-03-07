@@ -1,3 +1,4 @@
+using System;
 using Basket.API.Application.Interfaces;
 using Basket.API.Application.Services;
 using Basket.API.Infrastructure.Repositories;
@@ -6,6 +7,7 @@ using BuildingBlocks.Behaviors;
 using BuildingBlocks.Exceptions.Handler;
 using BuildingBlocks.Utils;
 using Carter;
+using Discount.Grpc;
 using Marten;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -64,7 +66,11 @@ public static class BuilderServiceExtension
         #endregion Example
 
         // Grpc
-        services.AddScoped<GrpcDiscountServiceClient>();
+        // _ = services.AddScoped<GrpcDiscountServiceClient>(); // way 1
+        services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(o =>
+        {
+            o.Address = new Uri(configuration["GrpcConfigs:DiscountUrl"]);
+        });
 
         // Exception Handler
         _ = services.AddExceptionHandler<CustomExceptionHandler>();
@@ -73,7 +79,7 @@ public static class BuilderServiceExtension
         services.AddHealthChecks()
             .AddNpgSql(configuration.GetConnectionString("Marten")!)
             .AddRedis(configuration.GetConnectionString("Redis")!);
-      
+
         return services;
     }
 }
