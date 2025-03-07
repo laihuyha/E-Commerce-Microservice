@@ -5,7 +5,6 @@
 ## Services
 
 ### Catalog
-
 * .NET 8 and C# 12
 * Vertical Slice Architecture implementation with Feature folders and single .cs file includes different classes in one file
 * CQRS using MediatR
@@ -25,6 +24,13 @@
 * Cross-cutting concerns Logging, Global Exception Handling and Health Checks
 
 ### Discount
+* .NET 8 and C# 12
+* N-Layered Architecture implementation.
+* CQRS using MediatR
+* gRpc
+* Sqlite
+* EFCore.
+* Cross-cutting concerns Logging, Global Exception Handling and Health Checks
 
 ### Ordering
 

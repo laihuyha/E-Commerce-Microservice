@@ -1,7 +1,10 @@
 **/.env
 **/.vs
 **/.vscode
+**/.idea
 **/bin
 **/node_modules
 **/obj
 **db
+**-wal
+**-shm

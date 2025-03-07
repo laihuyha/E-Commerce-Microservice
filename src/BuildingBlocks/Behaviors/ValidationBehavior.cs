@@ -25,7 +25,7 @@ public class ValidationBehavior<TRequest, TResponse>
             .SelectMany(r => r.Errors)
             .ToList();
 
-        if (failures.Any())
+        if (failures.Count != 0)
             throw new ValidationException(failures);
 
         return await next();

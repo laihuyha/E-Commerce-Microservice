@@ -1,0 +1,42 @@
+﻿syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option  csharp_namespace = "Discount.Grpc";
+
+package discount;
+
+service DiscountProtoService{
+  rpc GetDiscount (GetDiscountRequest) returns (Coupon);
+  rpc CreateDiscount (CreateDiscountRequest) returns (Coupon);
+  rpc UpdateDiscount (UpdateDiscountRequest) returns (Coupon);
+  rpc DeleteDiscount (DeleteDiscountRequest) returns (DeleteDiscountResponse);
+}
+
+message GetDiscountRequest {
+  string productName = 1;
+}
+
+message Coupon {
+  int32 id = 1;
+  string productName = 2;
+  string description = 3;
+  double amount = 4;
+  int32 type = 5;
+  google.protobuf.Timestamp expiryDate = 6;
+}
+message CreateDiscountRequest {
+  Coupon coupon = 1;
+}
+
+message UpdateDiscountRequest {
+  Coupon coupon = 1;
+}
+
+message DeleteDiscountRequest {
+  int32 id = 1;
+}
+
+message DeleteDiscountResponse {
+  bool success = 1;
+}

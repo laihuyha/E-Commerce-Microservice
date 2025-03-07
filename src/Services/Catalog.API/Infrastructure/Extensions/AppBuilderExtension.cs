@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using MongoDB.Entities;
 
-namespace Catalog.API.Extensions
+namespace Catalog.API.Infrastructure.Extensions
 {
     public static class AppBuilderExtension
     {
@@ -19,7 +19,6 @@ namespace Catalog.API.Extensions
             appBuilder.UseFastEndpoints(cfg =>
             {
                 cfg.Serializer.Options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-                // cfg.Endpoints.RoutePrefix = "api";
             }).UseSwaggerGen();
 
             appBuilder.UseMiddleware<ExceptionMiddleware>();
@@ -27,7 +26,7 @@ namespace Catalog.API.Extensions
             //Health check
             appBuilder.UseHealthChecks("/health", new HealthCheckOptions
             {
-                Predicate = _ => true,
+                Predicate      = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
 
@@ -38,11 +37,12 @@ namespace Catalog.API.Extensions
 
         public static async Task InitializeConnection(IConfiguration config)
         {
-            var host = config["MongoDb:Host"];
+            var host        = config["MongoDb:Host"];
             var credentials = config.GetSection("MongoDb:Credentials");
-            var userName = credentials.GetValue<string>("UserName");
-            var password = credentials.GetValue<string>("Password");
-            var connectionString = $"mongodb://{userName}:{password}@{host}:27017/?authMechanism=SCRAM-SHA-256";
+            var userName    = credentials.GetValue<string>("UserName");
+            var password    = credentials.GetValue<string>("Password");
+            var connectionString =
+                $"mongodb://{userName}:{password}@{host}:27017/?authSource=admin&authMechanism=SCRAM-SHA-256";
             var mongoClientSettings = MongoClientSettings.FromConnectionString(connectionString);
 
             await DB.InitAsync("CatalogDb", mongoClientSettings);
