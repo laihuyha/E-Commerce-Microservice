@@ -1,4 +1,5 @@
 using Basket.API.Application.Interfaces;
+using Basket.API.Application.Services;
 using Basket.API.Infrastructure.Repositories;
 using Basket.API.Infrastructure.Schema.Build;
 using BuildingBlocks.Behaviors;
@@ -61,6 +62,9 @@ public static class BuilderServiceExtension
         //     return new CachedBasketRepository(repository, distributedCache);
         // });
         #endregion Example
+
+        // Grpc
+        services.AddScoped<GrpcDiscountServiceClient>();
 
         // Exception Handler
         _ = services.AddExceptionHandler<CustomExceptionHandler>();

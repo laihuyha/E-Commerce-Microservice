@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Discount.Grpc.Data;
 using Discount.Grpc.Models.Exceptions;
